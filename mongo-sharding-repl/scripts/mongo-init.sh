@@ -4,8 +4,7 @@
 # Инициализируем бд
 ###
 
-docker compose exec -T configSrv mongosh --port 27017 --quiet <<EOF
-\'configSrv\'
+docker compose exec -T configSrv mongosh --port 27017  --quiet <<EOF
 rs.initiate(
   {
     _id : "config_server",
@@ -17,13 +16,14 @@ rs.initiate(
 );
 EOF
 
-docker compose exec -T shard1 mongosh --port 27018 --quiet <<EOF
-\'shard1\'
+docker compose exec -T shard1 mongosh --port 27018 --quiet  <<EOF
 rs.initiate(
     {
-      _id : "shard1",
+      _id: "shard1",
       members: [
-        { _id : 0, host : "shard1:27018" }
+        { _id: 0, host : "shard1:27018" },
+        { _id: 1, host: "s1mongodb1:27027" },
+        { _id: 2, host: "s1mongodb2:27028" }
       ]
     }
 );
@@ -33,16 +33,17 @@ docker compose exec -T shard2 mongosh --port 27019 --quiet <<EOF
 \'shard2\'
 rs.initiate(
     {
-      _id : "shard2",
+      _id: "shard2",
       members: [
-        { _id : 1, host : "shard2:27019" }
+        { _id: 1, host : "shard2:27019" },
+        { _id: 2, host: "s2mongodb1:27037" },
+        { _id: 3, host: "s2mongodb2:27038" }
       ]
     }
   );
 EOF
 
-docker compose exec -T mongos_router mongosh --port 27020 --quiet <<EOF
-\'mongos_router\'
+docker compose exec -T mongos_router mongosh --port 27020 --quiet  <<EOF
 sh.addShard( "shard1/shard1:27018");
 sh.addShard( "shard2/shard2:27019");
 
