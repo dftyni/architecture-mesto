@@ -16,11 +16,11 @@ docker compose up -d
 ```
 [1_connecting_to_and_initializing_the_configuration_server.sh](scripts/1_connecting_to_and_initializing_the_configuration_server.sh)
 
-Инициализируем шарды:
+Инициализируем шарды и реплики:
 ```shell
 ./scripts/2_initialization_of_shards.sh
 ```
-[2_initialization_of_shards.sh](scripts/2_initialization_of_shards.sh)
+[2_initialization_of_shards_and_replicas.sh](scripts/2_initialization_of_shards_and_replicas.sh)
 
 Инициализируем роутер:
 ```shell
