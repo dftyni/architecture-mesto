@@ -1,4 +1,4 @@
-name: mongo-sharding-repl
+name: sharding-repl-cache
 services:
   # сервер конфигурации
   configSrv:
@@ -205,7 +205,21 @@ services:
       test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
       interval: 5s
       start_period: 10s
-    
+  
+  # redis
+  redis_1:
+    image: "redis:latest"
+    container_name: redis_1
+    ports:
+      - "6379"
+    volumes:
+      - redis_1_data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.20
+  
   # приложение
   pymongo_api:
     container_name: pymongo_api
@@ -223,6 +237,7 @@ services:
     environment:
       MONGODB_URL: "mongodb://mongos_router:27020"
       MONGODB_DATABASE_NAME: "somedb"
+      REDIS_URL: "redis://redis_1:6379"
 
 networks:
   app-network:
@@ -240,3 +255,4 @@ volumes:
   shard2-replica1-data:
   shard2-replica2-data:
   shard2-replica3-data:
+  redis_1_data: {}
