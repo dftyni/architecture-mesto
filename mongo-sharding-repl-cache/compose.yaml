@@ -1,6 +1,6 @@
 name: mongo-sharding-repl-cache
 services:
-  # сервер конфигурации
+
   configSrv:
     image: mongo:latest
     container_name: configSrv
@@ -18,7 +18,6 @@ services:
       interval: 5s
       start_period: 10s
 
-  # Шард 1 и его реплики
   shard1:
     image: mongo:latest
     container_name: shard1
@@ -62,7 +61,6 @@ services:
       - shard1-replica2-data:/data/db
     command: ["--shardsvr", "--replSet", "shard1", "--bind_ip_all", "--port", "27018"]
 
-  # Шард 2 и его реплики
   shard2:
     image: mongo:latest
     container_name: shard2
