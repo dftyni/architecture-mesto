@@ -1,8 +1,8 @@
-# pymongo-api + шардирование
+# pymongo-api + шардирование + репликация
 
 ## Как запустить
 
-Перейти в папку mongo-sharding
+Перейти в папку mongo-sharding-repl
 
 ```shell
 docker compose up -d
@@ -30,22 +30,25 @@ docker compose up -d
   "mongo_nodes": [
     [
       "mongos_router",
-      27020]
+      27025
+    ]
   ],
   "mongo_primary_host": null,
   "mongo_secondary_hosts": [],
   "mongo_address": [
     "mongos_router",
-    27020],
+    27025
+  ],
   "mongo_is_primary": true,
   "mongo_is_mongos": true,
   "collections": {
     "helloDoc": {
-      "documents_count": 1492
+      "documents_count": 1000
     }
   },
   "shards": {
-    "shard1": "shard1/shard1:27018"
+    "shard1": "shard1/shard1-primary:27018,shard1-secondary1:27019,shard1-secondary2:27020",
+    "shard2": "shard2/shard2-primary:27021,shard2-secondary1:27022,shard2-secondary2:27023"
   },
   "cache_enabled": false,
   "status": "OK"
