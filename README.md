@@ -1,4 +1,4 @@
-Выполнить скрипт из папки scripts/mongo-sharding.sh
+Выполнить скрипт из папки scripts/mongo-replica.sh
 
 Описать втаком формате:
 
