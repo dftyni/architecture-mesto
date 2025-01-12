@@ -3,4 +3,4 @@
 
 ### Ссылка на диаграмму в draw.io
 https://drive.google.com/file/d/1QrlUYQDudUt8sBi9BwuQoelVxzMDOc94/view?usp=sharing
-Финальный вариант находится на страницк 
+Финальный вариант находится на странице 5
