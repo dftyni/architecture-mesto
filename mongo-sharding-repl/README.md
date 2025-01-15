@@ -1,31 +1,79 @@
 ## Как запустить
 
-Запускаем mongodb и приложение
-
+1. Запускаем mongodb и приложение
 ```shell
 docker compose up -d
 ```
 
-Инициализируем mongodb
-
+2. Инициализируем mongodb
 ```shell
 ./scripts/mongo-init.sh
 ```
 
-Заполняем mongodb данными
-
+3. Заполняем mongodb данными
 ```shell
 ./scripts/fullfill-mongo.sh
 ```
 
+4. Для корректного перезапуска проекта необходимо выполнить команду
+```shell
+docker compose down --volumes
+```
+Дальше выполняем команды с шага 1
+
 ## Как проверить
 
-### Если вы запускаете проект на локальной машине
+### В браузере
+Откройте http://localhost:8080
 
-Откройте в браузере http://localhost:8080
+### В командной строке
+Проверка количества документов на 1 шарде
+```shell
+docker compose exec -T shard1 mongosh --port 27018 --quiet <<EOF
+use somedb;
+db.helloDoc.countDocuments();
+exit();
+EOF
+```
 
-## Список необходимых команд
-### Все они выполняются в скрипте mongo-init.sh отдельнозапускать их не нужно.
+Проверка количества документов на реплике 1 шарда
+```shell
+docker compose exec -T shard1_replica1 mongosh --port 27028 --quiet <<EOF
+use somedb;
+db.helloDoc.countDocuments();
+exit();
+EOF
+```
+
+Проверка количества документов на 2 шарде
+```shell
+docker compose exec -T shard2 mongosh --port 27019 --quiet <<EOF
+use somedb;
+db.helloDoc.countDocuments();
+exit();
+EOF
+```
+
+Проверка количества документов на реплике 2 шарда
+```shell
+docker compose exec -T shard2_replica1 mongosh --port 27029 --quiet <<EOF
+use somedb;
+db.helloDoc.countDocuments();
+exit();
+EOF
+```
+
+Проверка общего количества документов в базе
+```shell
+docker compose exec -T mongos_router mongosh --port 27020 --quiet <<EOF
+use somedb
+
+db.helloDoc.countDocuments()
+exit();
+EOF
+```
+
+## Список команд в скрипте mongo-init.sh
 
 1. Инициализация сервера конфигурации
 ```shell
@@ -84,42 +132,6 @@ sh.addShard( "shard2/shard2:27019");
 
 sh.enableSharding("somedb");
 sh.shardCollection("somedb.helloDoc", { "name" : "hashed" } )
-exit();
-EOF
-```
-
-5. Проверка количества документов на 1 шарде
-```shell
-docker compose exec -T shard1 mongosh --port 27018 --quiet <<EOF
-use somedb;
-db.helloDoc.countDocuments();
-exit();
-EOF
-```
-
-6. Проверка количества документов на реплике 1 шарда
-```shell
-docker compose exec -T shard1_replica1 mongosh --port 27028 --quiet <<EOF
-use somedb;
-db.helloDoc.countDocuments();
-exit();
-EOF
-```
-
-7. Проверка количества документов на 2 шарде
-```shell
-docker compose exec -T shard2 mongosh --port 27019 --quiet <<EOF
-use somedb;
-db.helloDoc.countDocuments();
-exit();
-EOF
-```
-
-8. Проверка количества документов на реплике 2 шарда
-```shell
-docker compose exec -T shard2_replica1 mongosh --port 27029 --quiet <<EOF
-use somedb;
-db.helloDoc.countDocuments();
 exit();
 EOF
 ```

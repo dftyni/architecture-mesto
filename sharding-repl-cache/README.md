@@ -1,33 +1,57 @@
-## Как запустить
-
-Запускаем mongodb и приложение
-
+1. Запускаем mongodb и приложение
 ```shell
 docker compose up -d
 ```
 
-Инициализируем mongodb
-
+2. Инициализируем mongodb
 ```shell
 ./scripts/mongo-init.sh
 ```
 
-Заполняем mongodb данными
-
+3. Заполняем mongodb данными
 ```shell
 ./scripts/fullfill-mongo.sh
 ```
 
-Чтобы правильно перезапучтить проект используйте команду
+4. Для корректного перезапуска проекта необходимо выполнить команду
 ```shell
 docker compose down --volumes
 ```
+Дальше выполняем команды с шага 1
 
 ## Как проверить
 
-### Если вы запускаете проект на локальной машине
+### В браузере
+Откройте http://localhost:8080
 
-Откройте в браузере http://localhost:8080
+### В командной строке
+Проверка количества документов на 1 шарде
+```shell
+docker compose exec -T shard1 mongosh --port 27018 --quiet <<EOF
+use somedb;
+db.helloDoc.countDocuments();
+exit();
+EOF
+```
+
+Проверка количества документов на 2 шарде
+```shell
+docker compose exec -T shard2 mongosh --port 27019 --quiet <<EOF
+use somedb;
+db.helloDoc.countDocuments();
+exit();
+EOF
+```
+
+Проверка общего количества документов в базе
+```shell
+docker compose exec -T mongos_router mongosh --port 27020 --quiet <<EOF
+use somedb
+
+db.helloDoc.countDocuments()
+exit();
+EOF
+```
 
 Для проверки работоспособности кэша выполните подряд несколько запросов
 ```shell
@@ -37,8 +61,7 @@ curl -o /dev/null -s -w "Time: %{time_total}\n" -X 'GET' \
 ```
  Первый запрос отработает за 1 секунду, последующие за ~0.01.
 
-## Список необходимых команд
-### Все они выполняются в скрипте mongo-init.sh отдельнозапускать их не нужно.
+## Список команд в скрипте mongo-init.sh
 
 1. Инициализация сервера конфигурации
 ```shell
@@ -98,54 +121,6 @@ sh.addShard( "shard2/shard2:27019");
 sh.enableSharding("somedb");
 sh.shardCollection("somedb.helloDoc", { "name" : "hashed" } )
 
-use somedb
-
-for(var i = 0; i < 1000; i++) db.helloDoc.insert({age:i, name:"ly"+i})
-
-db.helloDoc.countDocuments()
 exit();
 EOF
-```
-
-5. Проверка количества документов на 1 шарде
-```shell
-docker compose exec -T shard1 mongosh --port 27018 --quiet <<EOF
-use somedb;
-db.helloDoc.countDocuments();
-exit();
-EOF
-```
-
-6. Проверка количества документов на реплике 1 шарда
-```shell
-docker compose exec -T shard1_replica1 mongosh --port 27028 --quiet <<EOF
-use somedb;
-db.helloDoc.countDocuments();
-exit();
-EOF
-```
-
-7. Проверка количества документов на 2 шарде
-```shell
-docker compose exec -T shard2 mongosh --port 27019 --quiet <<EOF
-use somedb;
-db.helloDoc.countDocuments();
-exit();
-EOF
-```
-
-8. Проверка количества документов на реплике 2 шарда
-```shell
-docker compose exec -T shard2_replica1 mongosh --port 27029 --quiet <<EOF
-use somedb;
-db.helloDoc.countDocuments();
-exit();
-EOF
-```
-
-9. Выполнить запрос на получиение списка пользователей с отображением времени выполнения
-```shell
-curl -o /dev/null -s -w "Time: %{time_total}\n" -X 'GET' \
-'http://localhost:8080/helloDoc/users' \
--H 'accept: application/json'
 ```

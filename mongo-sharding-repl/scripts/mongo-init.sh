@@ -56,8 +56,5 @@ sh.addShard( "shard2/shard2:27019");
 sh.enableSharding("somedb");
 sh.shardCollection("somedb.helloDoc", { "name" : "hashed" } )
 
-use somedb
-
-db.helloDoc.countDocuments()
 exit();
 EOF
