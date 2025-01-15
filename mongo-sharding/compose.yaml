@@ -1,0 +1,56 @@
+services:
+  configSrv:
+    container_name: config
+    image: mongo:latest
+    volumes:
+      - config_data:/data/db
+    ports:
+      - 27017:27017
+    command: mongod --port 27017 --configsvr --replSet rs-config-server
+
+  router:
+    image: mongo:latest
+    container_name: router
+    command: mongos --port 27021 --configdb rs-config-server/configSrv:27017 --bind_ip_all
+    ports:
+      - "27021:27021"
+    restart: always
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      interval: 5s
+      start_period: 10s
+
+  shard01:
+    container_name: shard01
+    image: mongo:latest
+    volumes:
+      - shard011_data:/data/db
+    command: mongod --port 27019 --shardsvr --replSet shard-01
+
+  shard02:
+    container_name: shard02
+    image: mongo:latest
+    volumes:
+      - shard022_data:/data/db
+    command: mongod --port 27020 --shardsvr --replSet shard-02
+
+  pymongo_api:
+    container_name: pymongo_api
+    build: 
+      context: api_app
+      dockerfile: Dockerfile
+    image: kazhem/pymongo_api:1.0.0
+    depends_on:
+      - router
+      - configSrv
+    ports:
+      - 8080:8080
+    environment:
+      MONGODB_URL: "mongodb://router:27021"
+      MONGODB_DATABASE_NAME: "somedb"
+
+
+volumes:
+  config_data:
+  shard011_data:
+  shard022_data:
