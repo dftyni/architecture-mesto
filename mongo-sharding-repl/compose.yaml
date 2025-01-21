@@ -1,4 +1,4 @@
-name: mongo-sharding
+name: mongo-sharding-repl
 services:
 
   pymongo_api:
@@ -38,7 +38,14 @@ services:
       - mongodb_cluster_configsvr01_config:/data/configdb
     restart: always
 
-
+  configsvr02:
+    image: mongo:latest
+    container_name: mongo-config-02
+    command: mongod --port 27017 --configsvr --replSet rs-config-server
+    volumes:
+      - mongodb_cluster_configsvr02_db:/data/db
+      - mongodb_cluster_configsvr02_config:/data/configdb
+    restart: always
   ## Shards
   ## Shards 01
 
@@ -51,6 +58,22 @@ services:
       - mongodb_cluster_shard01_a_config:/data/configdb
     restart: always
 
+  shard01-b:
+    image: mongo:latest
+    container_name: shard-01-node-b
+    command: mongod --port 27017 --shardsvr --replSet rs-shard-01
+    volumes:
+      - mongodb_cluster_shard01_b_db:/data/db
+      - mongodb_cluster_shard01_b_config:/data/configdb
+    restart: always
+  shard01-c:
+    image: mongo:latest
+    container_name: shard-01-node-c
+    command: mongod --port 27017 --shardsvr --replSet rs-shard-01
+    volumes:
+      - mongodb_cluster_shard01_c_db:/data/db
+      - mongodb_cluster_shard01_c_config:/data/configdb
+    restart: always
 
 
   ## Shards 02
@@ -63,6 +86,23 @@ services:
       - mongodb_cluster_shard02_a_config:/data/configdb
     restart: always
 
+  shard02-b:
+    image: mongo:latest
+    container_name: shard-02-node-b
+    command: mongod --port 27017 --shardsvr --replSet rs-shard-02
+    volumes:
+      - mongodb_cluster_shard02_b_db:/data/db
+      - mongodb_cluster_shard02_b_config:/data/configdb
+    restart: always
+  shard02-c:
+    image: mongo:latest
+    container_name: shard-02-node-c
+    command: mongod --port 27017 --shardsvr --replSet rs-shard-02
+    volumes:
+      - mongodb_cluster_shard02_c_db:/data/db
+      - mongodb_cluster_shard02_c_config:/data/configdb
+    restart: always
+
 
 
 volumes:
@@ -72,8 +112,23 @@ volumes:
   mongodb_cluster_configsvr01_db:
   mongodb_cluster_configsvr01_config:
 
+  mongodb_cluster_configsvr02_db:
+  mongodb_cluster_configsvr02_config:
+
   mongodb_cluster_shard01_a_db:
   mongodb_cluster_shard01_a_config:
 
+  mongodb_cluster_shard01_b_db:
+  mongodb_cluster_shard01_b_config:
+
+  mongodb_cluster_shard01_c_db:
+  mongodb_cluster_shard01_c_config:
+
   mongodb_cluster_shard02_a_db:
   mongodb_cluster_shard02_a_config:
+
+  mongodb_cluster_shard02_b_db:
+  mongodb_cluster_shard02_b_config:
+
+  mongodb_cluster_shard02_c_db:
+  mongodb_cluster_shard02_c_config:
