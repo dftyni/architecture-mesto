@@ -1,3 +1,7 @@
 Смотрите Readme.md в соответствующей папке.
 
-[final.drawio](final.drawio)
+- [mongo-sharding](mongo-sharding/README.md)
+- [mongo-sharding-repl](mongo-sharding-repl/README.md)
+- [sharding-repl-cache](sharding-repl-cache/README.md)
+
+[итоговая схема](final.drawio)
