@@ -219,12 +219,12 @@ services:
       test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
       interval: 5s
       start_period: 10s
-
+# redis
   redis_1:
     image: "redis:latest"
     container_name: redis_1
     ports:
-      - "6379:6379"
+      - "6379"
     volumes:
       - redis_1_data:/data
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
@@ -246,7 +246,7 @@ volumes:
   mongodb2-data:
   mongodb3-data:
   mongodb4-data:
+  redis_1_data: { }
   config-data:
   shard1-data:
   shard2-data:
-  redis_1_data: { }
