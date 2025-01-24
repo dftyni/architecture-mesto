@@ -1,35 +1,26 @@
-# pymongo-api
+# Как запустить
 
-## Как запустить
+Шаг 1: Запуск контейнеров
 
-Запускаем mongodb и приложение
-
-```shell
 docker compose up -d
-```
 
-Заполняем mongodb данными
+Ша 2: Запуск и инициализация сервера конфигурации и шардов
 
-```shell
-./scripts/mongo-init.sh
-```
+./scripts/init-configserver.sh
 
-## Как проверить
+./scripts/init-shards.sh
 
-### Если вы запускаете проект на локальной машине
+Шаг 3: Инициализация роутера и наполнение данными
 
-Откройте в браузере http://localhost:8080
+./scripts/init-router.sh
 
-### Если вы запускаете проект на предоставленной виртуальной машине
+Шаг 4: Проверка счетчика в каждом из шардов
 
-Узнать белый ip виртуальной машины
+./scripts/shard1_count.sh
 
-```shell
-curl --silent http://ifconfig.me
-```
+./scripts/shard2_count.sh
 
-Откройте в браузере http://<ip виртуальной машины>:8080
+Схема Draw.io:
+https://drive.google.com/file/d/1VRZnZL-LnHt0midOo5fjBZV4KuQfFpyb/view?usp=sharing
 
-## Доступные эндпоинты
-
-Список доступных эндпоинтов, swagger http://<ip виртуальной машины>:8080/docs
+либо файл "Схемы_Спринт_2" в корневой папке
