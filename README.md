@@ -1,35 +1,45 @@
-# pymongo-api
 
-## Как запустить
-
-Запускаем mongodb и приложение
+### Запускаем приложение 
 
 ```shell
 docker compose up -d
-```
 
-Заполняем mongodb данными
+### Инициализируем config server
 
 ```shell
-./scripts/mongo-init.sh
-```
+./scripts/01-mongo-config-srv-init.sh
 
-## Как проверить
+### Инициализируем шарды и реплики
+
+```shell
+./scripts/02-mongo-shards-init.sh
+
+### Инициализируем роутер и шардинг бд
+
+```shell
+./scripts/03-mongo-router-init.sh 
+
+### Заполняем базу данными
+
+```shell
+./scripts/04-mongo-init.sh
+
+
+### Проверяем количество данных в шардах
+
+```shell
+./scripts/05-mongo-check-shards.sh 
+
+### Проверяем статус и количество данных в репликах
+
+```shell
+./scripts/06-mongo-check-replicas.sh 
+
+### Проверяем работу кэша
+```shell
+./scripts/07-mongo-check-cashe.sh 
 
 ### Если вы запускаете проект на локальной машине
 
-Откройте в браузере http://localhost:8080
-
-### Если вы запускаете проект на предоставленной виртуальной машине
-
-Узнать белый ip виртуальной машины
-
-```shell
-curl --silent http://ifconfig.me
+http://localhost:8080
 ```
-
-Откройте в браузере http://<ip виртуальной машины>:8080
-
-## Доступные эндпоинты
-
-Список доступных эндпоинтов, swagger http://<ip виртуальной машины>:8080/docs
