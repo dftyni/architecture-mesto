@@ -1,0 +1,158 @@
+services:
+  pymongo_api:
+    container_name: pymongo_api
+    build:
+      context: api_app
+      dockerfile: Dockerfile
+    image: kazhem/pymongo_api:1.0.0
+    depends_on:
+      - mongos_router
+    ports:
+      - 8080:8080
+    networks:
+      app-network:
+        ipv4_address: 51.250.0.11
+    environment:
+      MONGODB_URL: "mongodb://mongos_router:27020"
+      MONGODB_DATABASE_NAME: "somedb"
+  mongo_config_server:
+    image: mongo:latest
+    container_name: mongo_config_server
+    restart: always
+    ports:
+      - "27017:27017"
+    networks:
+      app-network:
+        ipv4_address: 51.250.0.10
+    volumes:
+      - config-data:/data/db
+    command: ["--configsvr", "--replSet", "config_server", "--bind_ip_all", "--port", "27017"]
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      start_period: 10s
+  mongos_router:
+    image: mongo:latest
+    container_name: mongos_router
+    restart: always
+    ports:
+      - "27020:27020"
+    networks:
+      app-network:
+        ipv4_address: 51.250.0.7
+    command: ["mongos", "--configdb", "config_server/mongo_config_server:27017", "--bind_ip_all", "--port", "27020"]
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      start_period: 10s
+  mongodb1:
+    image: mongo:latest
+    container_name: mongodb1
+    restart: always
+    ports:
+      - "27018:27018"
+    networks:
+      app-network:
+        ipv4_address: 51.250.0.9
+    volumes:
+      - mongodb1_data_container:/data/db
+    command: ["--shardsvr", "--replSet", "mongodb1", "--bind_ip_all", "--port", "27018"]
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      start_period: 10s
+  mongodb1_0:
+    image: mongo:latest
+    container_name: mongodb1_0
+    restart: always
+    ports:
+      - "27021:27021"
+    networks:
+      app-network:
+        ipv4_address: 51.250.0.12
+    volumes:
+      - mongodb1_0_data_container:/data/db
+    command: ["--shardsvr", "--replSet", "mongodb1", "--bind_ip_all", "--port", "27021"]
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      start_period: 10s
+  mongodb1_1:
+    image: mongo:latest
+    container_name: mongodb1_1
+    restart: always
+    ports:
+      - "27022:27022"
+    networks:
+      app-network:
+        ipv4_address: 51.250.0.14
+    volumes:
+      - mongodb1_1_data_container:/data/db
+    command: ["--shardsvr", "--replSet", "mongodb1", "--bind_ip_all", "--port", "27022"]
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      start_period: 10s
+  mongodb2:
+    image: mongo:latest
+    container_name: mongodb2
+    restart: always
+    ports:
+      - "27019:27019"
+    networks:
+      app-network:
+        ipv4_address: 51.250.0.8
+    volumes:
+      - mongodb2_data_container:/data/db
+    command: ["--shardsvr", "--replSet", "mongodb2", "--bind_ip_all", "--port", "27019"]
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      start_period: 10s
+  mongodb2_0:
+    image: mongo:latest
+    container_name: mongodb2_0
+    restart: always
+    ports:
+      - "27023:27023"
+    networks:
+      app-network:
+        ipv4_address: 51.250.0.15
+    volumes:
+      - mongodb2_0_data_container:/data/db
+    command: ["--shardsvr", "--replSet", "mongodb2", "--bind_ip_all", "--port", "27023"]
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      start_period: 10s
+  mongodb2_1:
+    image: mongo:latest
+    container_name: mongodb2_1
+    restart: always
+    ports:
+      - "27024:27024"
+    networks:
+      app-network:
+        ipv4_address: 51.250.0.13
+    volumes:
+      - mongodb2_1_data_container:/data/db
+    command: ["--shardsvr", "--replSet", "mongodb2", "--bind_ip_all", "--port", "27024"]
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      start_period: 10s
+networks:
+  app-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 51.250.0.0/16
+volumes:
+  config-data:
+  mongodb1_data_container:
+  mongodb1_0_data_container:
+  mongodb1_1_data_container:
+  mongodb2_data_container:
+  mongodb2_0_data_container:
+  mongodb2_1_data_container:
