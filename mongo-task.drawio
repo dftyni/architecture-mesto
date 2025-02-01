@@ -350,7 +350,7 @@
           <mxGeometry x="1919" y="-100" width="150" height="70" as="geometry" />
         </mxCell>
         <mxCell id="xMeISvJcliP3NUUVBC6i-110" value="Добавили гэйтвэй на базе nginx, консул для мониторинга и consule_teplate для генерации конфига" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="2550" y="-503" width="290" height="90" as="geometry" />
+          <mxGeometry x="2560" y="-520" width="290" height="90" as="geometry" />
         </mxCell>
         <mxCell id="xMeISvJcliP3NUUVBC6i-112" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;endWidth=72.38095238095238;endSize=15.923809523809522;width=36.19047619047619;" edge="1" parent="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
@@ -375,6 +375,15 @@
             <mxPoint x="2420" y="180" as="sourcePoint" />
             <mxPoint x="2490" y="130" as="targetPoint" />
           </mxGeometry>
+        </mxCell>
+        <mxCell id="xMeISvJcliP3NUUVBC6i-116" value="CDN NE" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="3060" y="-360" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="xMeISvJcliP3NUUVBC6i-117" value="CDN WE" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="3210" y="-360" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="xMeISvJcliP3NUUVBC6i-118" value="&lt;div&gt;CDN&lt;/div&gt;Представим что он существует,&amp;nbsp;&lt;div&gt;NE - North Europe, WE - West Europe&lt;div&gt;С имеющейся системой никак не связан&amp;nbsp;&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="3050" y="-520" width="290" height="90" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
