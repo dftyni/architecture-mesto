@@ -1,0 +1,101 @@
+version: '3'
+services:
+  # Конфигурационный сервер MongoDB
+  configSrv:
+    image: mongo:latest
+    container_name: configSrv
+    restart: always
+    volumes:
+      - config-data:/data/db
+    command:
+      [
+        "mongod",
+        "--configsvr", 
+        "--replSet", "config_server", 
+        "--bind_ip_all", 
+        "--port", "27017"
+      ]
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      start_period: 10s
+
+  # Шард 1
+  shard1:
+    image: mongo:latest
+    container_name: shard1
+    restart: always
+    volumes:
+      - shard1-data:/data/db
+    command:
+      [
+        "mongod",
+        "--shardsvr", 
+        "--replSet", "shard1", 
+        "--bind_ip_all", 
+        "--port", "27017"
+      ]
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      start_period: 10s
+
+  # Шард 2
+  shard2:
+    image: mongo:latest
+    container_name: shard2
+    restart: always
+    volumes:
+      - shard2-data:/data/db
+    command:
+      [
+        "mongod",
+        "--shardsvr", 
+        "--replSet", "shard2", 
+        "--bind_ip_all", 
+        "--port", "27017"
+      ]
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      start_period: 10s
+  
+  # MongoDB маршрутизатор (mongos)
+  mongos_router:
+    image: mongo:latest
+    depends_on:
+      - configSrv
+    container_name: mongos_router
+    restart: always
+    command:
+      [
+        "mongos", 
+        "--configdb", 
+        "config_server/configSrv:27017",
+        "--bind_ip_all", 
+        "--port", "27017"
+      ]
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      start_period: 10s
+
+  # Приложение pymongo_api
+  pymongo_api:
+    container_name: pymongo_api
+    build: 
+      context: api_app
+      dockerfile: Dockerfile
+    image: kazhem/pymongo_api:1.0.0
+    depends_on:
+      - mongos_router
+    ports:
+      - 8080:8080
+    environment:
+      MONGODB_URL: "mongodb://mongos_router:27017"
+      MONGODB_DATABASE_NAME: "somedb"
+
+volumes:
+  config-data:
+  shard1-data:
+  shard2-data:
