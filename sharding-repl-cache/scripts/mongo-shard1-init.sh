@@ -11,7 +11,7 @@ rs.initiate(
       members: [
         { _id : 0, host : "shard1_r0:27018" },
         { _id : 1, host : "shard1_r1:27018" },
-        { _id : 2, host : "shard1_r2:27018" },
+        { _id : 2, host : "shard1_r2:27018" }
       ]
     }
 );

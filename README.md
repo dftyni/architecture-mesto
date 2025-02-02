@@ -1,5 +1,7 @@
 # pymongo-api
 
+Схема решения ./scheme.drawio
+
 ## Как запустить
 
 Запускаем mongodb и приложение
@@ -8,7 +10,20 @@
 docker compose up -d
 ```
 
-Заполняем mongodb данными
+Инициализируем сервер конфигурации
+
+```shell
+./scripts/mongo-config-srv-init.sh
+```
+
+Инициализируем шарды
+
+```shell
+./scripts/mongo-shard1-init.sh
+./scripts/mongo-shard2-init.sh
+```
+
+Инициализируем роутер и наполняем тестовыми данными
 
 ```shell
 ./scripts/mongo-init.sh

@@ -4,7 +4,7 @@
 # Инициализируем сервер конфигурации
 ###
 
-docker exec -it configSrv mongosh --port 27019
+docker exec -it configSrv mongosh --port 27019 --quiet <<EOF
 rs.initiate(
   {
     _id : "config_server",
@@ -15,4 +15,5 @@ rs.initiate(
   }
 );
 exit();
+EOF 
 
