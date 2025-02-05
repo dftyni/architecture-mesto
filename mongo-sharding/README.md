@@ -1,13 +1,8 @@
-# sharding-repl-cache
+# mongo-sharding
 
 ## Как запустить
-Переходим в каталог sharding-repl-cache
 
-```shell
-cd sharding-repl-cache
-```
-
-Запускаем mongodb, redis и приложение
+Запускаем mongodb и приложение
 
 ```shell
 docker compose up -d

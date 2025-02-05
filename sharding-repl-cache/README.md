@@ -1,11 +1,6 @@
 # sharding-repl-cache
 
 ## Как запустить
-Переходим в каталог sharding-repl-cache
-
-```shell
-cd sharding-repl-cache
-```
 
 Запускаем mongodb, redis и приложение
 
