@@ -1,5 +1,9 @@
 # pymongo-api
 
+## Схема
+
+[Ссылка](https://drive.google.com/file/d/1eXdaBu2NK1k-boCqB1eZaEtSSqdlcrTY/view)
+
 ## Как запустить
 
 Запускаем mongodb и приложение
