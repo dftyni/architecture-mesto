@@ -53,11 +53,13 @@ docker compose down --volumes && docker compose up -d
 ```shell
 docker compose exec -T shard1 mongosh --port 27018 <<EOF
 rs.status();
+EOF
 ```
 
 ```shell
 docker compose exec -T shard2 mongosh --port 27019 <<EOF
 rs.status();
+EOF
 ```
 В каждом шарде будет 1 master (PRIMARY) и 2 slave (SECONDARY).
 
@@ -101,11 +103,13 @@ docker compose down --volumes && docker compose up -d
 ```shell
 docker compose exec -T shard1 mongosh --port 27018 <<EOF
 rs.status();
+EOF
 ```
 
 ```shell
 docker compose exec -T shard2 mongosh --port 27019 <<EOF
 rs.status();
+EOF
 ```
 В каждом шарде будет 1 master (PRIMARY) и 2 slave (SECONDARY).
 
