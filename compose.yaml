@@ -1,24 +1,45 @@
+name: mongo-sharding
+
 services:
-  mongodb1:
-    container_name: mongodb1
-    image: dh-mirror.gitverse.ru/mongo:latest
-    volumes:
-      - mongodb1_data_container:/data/db
-
-  pymongo_api:
-    container_name: pymongo_api
-    build: 
-      context: api_app
-      dockerfile: Dockerfile
-    image: kazhem/pymongo_api:1.0.0
-    depends_on:
-      - mongodb1
+  configsvr:
+    image: mongo:latest
+    container_name: configsvr
+    command: ["mongod", "--configsvr", "--replSet", "configReplSet", "--port", "27017"]
     ports:
-      - 8080:8080
-    environment:
-      MONGODB_URL: "mongodb://mongodb1"
-      MONGODB_DATABASE_NAME: "somedb"
+      - "27017:27017"
+    volumes:
+      - config_data:/data/db
 
+  shard1:
+    image: mongo:latest
+    container_name: shard1
+    command: ["mongod", "--shardsvr", "--replSet", "shard1ReplSet", "--port", "27018"]
+    ports:
+      - "27018:27018"
+    volumes:
+      - shard1_data:/data/db
+
+  shard2:
+    image: mongo:latest
+    container_name: shard2
+    command: ["mongod", "--shardsvr", "--replSet", "shard2ReplSet", "--port", "27019"]
+    ports:
+      - "27019:27019"
+    volumes:
+      - shard2_data:/data/db
+
+  mongos:
+    image: mongo:latest
+    container_name: mongos
+    command: ["mongos", "--configdb", "configReplSet/configsvr:27017", "--port", "27020"]
+    ports:
+      - "27020:27020"
+    depends_on:
+      - configsvr
+      - shard1
+      - shard2
 
 volumes:
-  mongodb1_data_container:
+  config_data:
+  shard1_data:
+  shard2_data:
