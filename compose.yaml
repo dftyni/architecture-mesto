@@ -5,6 +5,7 @@ services:
     image: kazhem/pymongo_api:1.0.0
     depends_on:
       - mongos_router
+        condition: service_healthy
     ports:
       - 8080:8080
     environment:
@@ -12,17 +13,19 @@ services:
       MONGODB_DATABASE_NAME: "somedb"
 
   configSrv:
-    image: mongo:latest
-    container_name: configSrv 
+    image: mongo:6.0
+    container_name: configSrv
     restart: always
     ports:
       - "27019:27019"
     volumes:
       - config-data:/data/db
-    command: [ "--configsvr", "--replSet", "config_server", "--bind_ip_all", "--port", "27019" ]
+      command: [ "--configsvr", "config_server", "--bind_ip_all", "--port", "27019" ]
     healthcheck:
-      test: [ "CMD", "mongo", "--port", "27019", "--eval", "rs.status()" ]
+      test: [ "CMD", "mongosh", "--port", "27019", "--eval", "rs.status()" ]
       interval: 5s
+      timeout: 10s
+      retries: 5
       start_period: 10s
 
   shard1-db1:
@@ -33,9 +36,9 @@ services:
       - "27017:27017"
     volumes:
       - shard1-db1-data:/data/db
-    command: [ "--shardsvr", "--replSet", "shard1", "--bind_ip_all", "--port", "27017" ]
+    command: [ "--shardsvr", "shard1", "--bind_ip_all", "--port", "27017" ]
     healthcheck:
-      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
       interval: 5s
       start_period: 10s
 
@@ -47,9 +50,9 @@ services:
       - "27018:27018"
     volumes:
       - shard2-db1-data:/data/db
-    command: [ "--shardsvr", "--replSet", "shard2", "--bind_ip_all", "--port", "27017" ]
+    command: [ "--shardsvr", "shard2", "--bind_ip_all", "--port", "27018" ]
     healthcheck:
-      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
       interval: 5s
       start_period: 10s
 
@@ -61,7 +64,7 @@ services:
       - "27020:27020"
     command: [ "mongos", "--configdb", "config_server/configSrv:27019", "--bind_ip_all", "--port", "27020" ]
     healthcheck:
-      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
       interval: 5s
       start_period: 10s
 
