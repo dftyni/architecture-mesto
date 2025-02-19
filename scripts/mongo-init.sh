@@ -39,7 +39,7 @@ rs.initiate(
 );
 EOF
 
-# Инициируем роутер, и наполняем тестовыми данными
+# Инициируем роутер, наполняем базу тестовыми данными
 sleep 1
 docker compose exec -T mongos_router mongosh <<EOF
 sh.addShard("shard1/shard1-db1:27017");
@@ -51,7 +51,7 @@ for(var i = 0; i < 1000; i++) db.helloDoc.insertOne({age:i, name:"ly"+i});
 db.helloDoc.countDocuments();
 EOF
 
-# Проверки
+# Проверки (вывводим кол-во документов в каждом из шардов)
 docker compose exec -T shard1-db1 mongosh <<EOF
 use somedb;
 db.helloDoc.countDocuments();
