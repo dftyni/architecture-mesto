@@ -1,60 +1,55 @@
 name: mongo-sharding
 
 services:
-  configsvr:
-    image: mongo:latest
-    container_name: configsvr
-    command: ["mongod", "--configsvr", "--replSet", "configReplSet", "--port", "27017"]
-    ports:
-      - "27017:27017"
-    volumes:
-      - config_data:/data/db
-
-  shard1:
-    image: mongo:latest
-    container_name: shard1
-    command: ["mongod", "--shardsvr", "--replSet", "shard1ReplSet", "--port", "27018"]
-    ports:
-      - "27018:27018"
-    volumes:
-      - shard1_data:/data/db
-
-  shard2:
-    image: mongo:latest
-    container_name: shard2
-    command: ["mongod", "--shardsvr", "--replSet", "shard2ReplSet", "--port", "27019"]
-    ports:
-      - "27019:27019"
-    volumes:
-      - shard2_data:/data/db
-
-  mongos:
-    image: mongo:latest
-    container_name: mongos
-    command: ["mongos", "--configdb", "configReplSet/configsvr:27017", "--port", "27020"]
-    ports:
-      - "27020:27020"
-    depends_on:
-      - configsvr
-      - shard1
-      - shard2
-
   pymongo_api:
-    container_name: pymongo_api
-    build:
-      context: api_app
-      dockerfile: Dockerfile
     image: kazhem/pymongo_api:1.0.0
     depends_on:
-      - mongos
+      - mongos_router
     ports:
       - 8080:8080
     environment:
-      MONGODB_URL: "mongodb://mongos:27020"
+      MONGODB_URL: "mongodb://mongos_router"
       MONGODB_DATABASE_NAME: "somedb"
-      MONGODB_COLLECTION_NAME: "helloDoc"
+
+  configSrv:
+    image: mongo:latest
+    volumes:
+      - config-data:/data/db
+    command: [ "--configsvr", "--replSet", "config_server", "--bind_ip_all", "--port", "27019" ]
+    healthcheck:
+      test: [ "CMD", "mongo", "--port", "27019", "--eval", "rs.status()" ]
+      interval: 5s
+      start_period: 10s
+
+  shard1-db1:
+    image: mongo:latest
+    volumes:
+      - shard1-db1-data:/data/db
+    command: [ "--shardsvr", "--replSet", "shard1", "--bind_ip_all", "--port", "27017" ]
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      interval: 5s
+      start_period: 10s
+
+  shard2-db1:
+    image: mongo:latest
+    volumes:
+      - shard2-db1-data:/data/db
+    command: [ "--shardsvr", "--replSet", "shard2", "--bind_ip_all", "--port", "27017" ]
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      interval: 5s
+      start_period: 10s
+
+  mongos_router:
+    image: mongo:latest
+    command: [ "mongos", "--configdb", "config_server/configSrv:27019", "--bind_ip_all", "--port", "27017" ]
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      interval: 5s
+      start_period: 10s
 
 volumes:
-  config_data:
-  shard1_data:
-  shard2_data:
+  config-data:
+  shard1-db1-data:
+  shard2-db1-data:
