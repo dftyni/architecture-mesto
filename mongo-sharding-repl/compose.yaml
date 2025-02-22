@@ -12,7 +12,7 @@ services:
 
   shard1_1:
     image: mongo:latest
-    container_name: shard1
+    container_name: shard1_1
     restart: always
     volumes:
       - ./scripts:/scripts

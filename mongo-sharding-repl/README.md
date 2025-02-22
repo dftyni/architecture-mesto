@@ -1,4 +1,4 @@
-# Задание 2. Шардирование
+# Задание 3. Репликация
 
 ## Как запустить
 
@@ -7,7 +7,7 @@
 ```shell
 docker compose up -d
 ```
-Настройка сервера конфигураций, роутера и шардов. 
+Настройка сервера конфигураций, роутера, шардов и реплик. 
 Заполнение mongodb данными: в коллекцию helloDoc будет записано 1000 документов
 
 ```shell
@@ -26,7 +26,7 @@ EOF
 
 Проверка первого шарда
 ```shell
-docker compose exec -T shard1 mongosh --port 27018 <<EOF
+docker compose exec -T shard1_1 mongosh <<EOF
 use somedb
 db.helloDoc.countDocuments();
 EOF
@@ -34,7 +34,7 @@ EOF
 
 Проверка второго шарда
 ```shell
-docker compose exec -T shard2 mongosh --port 27019 <<EOF
+docker compose exec -T shard2_1 mongosh <<EOF
 use somedb
 db.helloDoc.countDocuments();
 EOF
@@ -68,8 +68,8 @@ http://<ip виртуальной машины>:8080/
     }
   },
   "shards": {
-    "shard1": "shard1/shard1:27018",
-    "shard2": "shard2/shard2:27019"
+    "shard1": "shard1/shard1_1:27017,shard1_2:27017,shard1_3:27017",
+    "shard2": "shard2/shard2_1:27017,shard2_2:27017,shard2_3:27017"
   },
   "cache_enabled": false,
   "status": "OK"
