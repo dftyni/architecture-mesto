@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="O4wpW_XyqmsYi2iSjeew" name="mongo-sharding">
-        <mxGraphModel dx="487" dy="703" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+        <mxGraphModel dx="513" dy="366" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -57,7 +57,7 @@
         </mxGraphModel>
     </diagram>
     <diagram name="mongo-sharding-repl" id="-H_mtQnk-PTXWXPvYvuk">
-        <mxGraphModel dx="974" dy="1406" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+        <mxGraphModel dx="1026" dy="732" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -162,7 +162,7 @@
         </mxGraphModel>
     </diagram>
     <diagram name="sharding-repl-cache" id="RhRn45xhTwztY2NSUTaV">
-        <mxGraphModel dx="1210" dy="1172" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+        <mxGraphModel dx="855" dy="610" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
             <root>
                 <mxCell id="Y9rWSAFsX7zVKKbZKSwo-0"/>
                 <mxCell id="Y9rWSAFsX7zVKKbZKSwo-1" parent="Y9rWSAFsX7zVKKbZKSwo-0"/>
@@ -331,7 +331,7 @@
         </mxGraphModel>
     </diagram>
     <diagram name="service_discovery+api-gateway" id="6jlNFsZVv_5eeoG40kZK">
-        <mxGraphModel dx="739" dy="1919" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+        <mxGraphModel dx="604" dy="1258" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
             <root>
                 <mxCell id="Wv45Lkag3OV2TKUkpabY-0"/>
                 <mxCell id="Wv45Lkag3OV2TKUkpabY-1" parent="Wv45Lkag3OV2TKUkpabY-0"/>
@@ -587,7 +587,7 @@
         </mxGraphModel>
     </diagram>
     <diagram name="+CDN" id="9RHii4exVF74ruzMUSD6">
-        <mxGraphModel dx="661" dy="1804" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+        <mxGraphModel dx="540" dy="1212" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
             <root>
                 <mxCell id="hql3Dm7QDyd-_h5DmARD-0"/>
                 <mxCell id="hql3Dm7QDyd-_h5DmARD-1" parent="hql3Dm7QDyd-_h5DmARD-0"/>
