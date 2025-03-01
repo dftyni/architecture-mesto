@@ -2,11 +2,13 @@
 
 ## Как запустить
 
-### Автоматический запуск (рекомендуется)
+### Автоматический запуск (для локальной машины)
 
 Для автоматического запуска MongoDB с шардированием и репликацией выполните:
 
 ```shell
+chmod +x sharding-repl-cache/init-mongodb.sh
+chmod +x sharding-repl-cache/start.sh
 cd sharding-repl-cache
 ./start.sh
 ```
@@ -329,6 +331,7 @@ Totals
 Для остановки и удаления контейнеров выполните:
 
 ```shell
+chmod +x sharding-repl-cache/stop.sh
 cd sharding-repl-cache
 ./stop.sh
 ```
@@ -343,46 +346,6 @@ cd sharding-repl-cache
 ```shell
 docker compose down -v
 ```
-
-## Возможные проблемы и их решение
-
-### Ошибка с флагами Docker
-
-Если вы видите ошибки, связанные с флагами Docker, такие как:
-```
-unknown shorthand flag: 'T' in -T
-See 'docker exec --help'.
-```
-
-Это означает, что ваша версия Docker не поддерживает флаг `-T`. Скрипты были обновлены для использования флага `-t` или `-i`, которые поддерживаются во всех версиях Docker.
-
-### Ошибка подключения к MongoDB
-
-Если вы видите ошибки подключения к MongoDB, такие как:
-```
-ServerSelectionTimeoutError: mongos_router:27024: [Errno 111] Connection refused
-```
-
-Попробуйте следующие шаги:
-
-1. Остановите все контейнеры:
-```shell
-./stop.sh
-```
-
-2. Запустите контейнеры заново:
-```shell
-./start.sh
-```
-
-### Ошибки инициализации репликации
-
-Если вы видите ошибки инициализации репликации, такие как:
-```
-NotYetInitialized: Replication has not yet been configured
-```
-
-Это может означать, что контейнеры MongoDB еще не полностью готовы. Скрипт `start.sh` автоматически ожидает готовности контейнеров, но иногда может потребоваться больше времени.
 
 ## Как проверить
 
