@@ -2,34 +2,6 @@
 
 ## Как запустить
 
-Запускаем mongodb и приложение
-
-```shell
-docker compose up -d
-```
-
-Заполняем mongodb данными
-
-```shell
-./scripts/mongo-init.sh
-```
-
-## Как проверить
-
-### Если вы запускаете проект на локальной машине
-
-Откройте в браузере http://localhost:8080
-
-### Если вы запускаете проект на предоставленной виртуальной машине
-
-Узнать белый ip виртуальной машины
-
-```shell
-curl --silent http://ifconfig.me
-```
-
-Откройте в браузере http://<ip виртуальной машины>:8080
-
-## Доступные эндпоинты
-
-Список доступных эндпоинтов, swagger http://<ip виртуальной машины>:8080/docs
+1. Приложение с шардированием mongoDB — [mongo-sharding/README.md](README.md)
+2. Приложение с шаридированием и репликацией mongoDB — [mongo-sharding-replication/README.md](README.md)
+3. Приложение с шардирование и репликацией mongoDB, и кешированием с Redis — [sharding-repl-cache/README.md](README.md)
