@@ -1,4 +1,5 @@
-ссылка на схему в draw.io:
+ссылка на схему (задания 2-6) в draw.io:
+https://drive.google.com/file/d/1xnAF0VIiFMNml_-vosCpC3ChU_gG_Ng_/view?usp=sharing
 
 name: sharding-repl-cache
 
