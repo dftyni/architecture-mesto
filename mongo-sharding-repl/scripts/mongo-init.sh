@@ -29,12 +29,14 @@ rs.initiate(
 );
 EOF
 
-docker compose exec -T shard2 mongosh --port 27022 <<EOF
+docker compose exec -T shard2a mongosh --port 27022 <<EOF
 rs.initiate(
   {
     _id : "shard2",
     members: [
-      { _id : 1, host : "shard2:27022" }
+      { _id : 0, host : "shard2a:27022" },
+      { _id : 1, host : "shard2b:27023" },
+      { _id : 2, host : "shard2c:27024" }
     ]
   }
 );
@@ -42,7 +44,7 @@ EOF
 
 docker compose exec -T mongos_router mongosh --port 27018 <<EOF
 sh.addShard( "shard1/shard1a:27019,shard1b:27020,shard1c:27021");
-sh.addShard( "shard2/shard2:27022");
+sh.addShard( "shard2/shard2a:27022,shard2b:27023,shard2c:27024");
 sh.enableSharding("somedb");
 sh.shardCollection("somedb.helloDoc", { "name" : "hashed" } );
 use somedb;
