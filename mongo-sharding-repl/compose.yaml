@@ -1,4 +1,4 @@
-name: mongo-sharding
+name: mongo-sharding-repl
 
 services:
 
@@ -10,7 +10,7 @@ services:
       - "27017:27017"
     networks:
       app-network:
-        ipv4_address: 173.17.0.10
+        ipv4_address: 173.17.0.12
     volumes:
       - config-data:/data/db
     command:
@@ -27,17 +27,40 @@ services:
       interval: 5s
       start_period: 10s
 
-  shard1:
+  mongos_router:
     image: mongo:latest
-    container_name: shard1
+    container_name: mongos_router
     restart: always
     ports:
       - "27018:27018"
     networks:
       app-network:
+        ipv4_address: 173.17.0.7
+    command:
+      [
+        "mongos",
+        "--configdb", 
+        "config_server/configSrv:27017",
+        "--bind_ip_all",
+        "--port",
+        "27018"
+      ]
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      interval: 5s
+      start_period: 10s
+
+  shard1a:
+    image: mongo:latest
+    container_name: shard1a
+    restart: always
+    ports:
+      - "27019:27019"
+    networks:
+      app-network:
         ipv4_address: 173.17.0.9
     volumes:
-      - shard1-data:/data/db
+      - shard1a-data:/data/db
     command:
       [
         "--shardsvr",
@@ -45,7 +68,57 @@ services:
         "shard1",
         "--bind_ip_all",
         "--port",
-        "27018"
+        "27019"
+      ]
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      interval: 5s
+      start_period: 10s
+
+  shard1b:
+    image: mongo:latest
+    container_name: shard1b
+    restart: always
+    ports:
+      - "27020:27020"
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.10
+    volumes:
+      - shard1b-data:/data/db
+    command:
+      [
+        "--shardsvr",
+        "--replSet",
+        "shard1",
+        "--bind_ip_all",
+        "--port",
+        "27020"
+      ]
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      interval: 5s
+      start_period: 10s
+
+  shard1c:
+    image: mongo:latest
+    container_name: shard1c
+    restart: always
+    ports:
+      - "27021:27021"
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.11
+    volumes:
+      - shard1c-data:/data/db
+    command:
+      [
+        "--shardsvr",
+        "--replSet",
+        "shard1",
+        "--bind_ip_all",
+        "--port",
+        "27021"
       ]
     healthcheck:
       test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
@@ -57,7 +130,7 @@ services:
     container_name: shard2
     restart: always
     ports:
-      - "27019:27019"
+      - "27022:27022"
     networks:
       app-network:
         ipv4_address: 173.17.0.8
@@ -70,30 +143,7 @@ services:
         "shard2",
         "--bind_ip_all",
         "--port",
-        "27019"
-      ]
-    healthcheck:
-      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
-      interval: 5s
-      start_period: 10s
-
-  mongos_router:
-    image: mongo:latest
-    container_name: mongos_router
-    restart: always
-    ports:
-      - "27020:27020"
-    networks:
-      app-network:
-        ipv4_address: 173.17.0.7
-    command:
-      [
-        "mongos",
-        "--configdb", 
-        "config_server/configSrv:27017",
-        "--bind_ip_all",
-        "--port",
-        "27020"
+        "27022"
       ]
     healthcheck:
       test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
@@ -108,16 +158,18 @@ services:
     image: kazhem/pymongo_api:1.0.0
     depends_on:
       - configSrv
-      - shard1
+      - shard1a
+      - shard1b
+      - shard1c
       - shard2
       - mongos_router
     ports:
       - 8080:8080
     networks:
       app-network:
-        ipv4_address: 173.17.0.11
+        ipv4_address: 173.17.0.13
     environment:
-      MONGODB_URL: "mongodb://mongos_router:27020"
+      MONGODB_URL: "mongodb://mongos_router:27018"
       MONGODB_DATABASE_NAME: "somedb"
 
 networks:
@@ -130,5 +182,7 @@ networks:
 
 volumes:
   config-data:
-  shard1-data:
+  shard1a-data:
+  shard1b-data:
+  shard1c-data:
   shard2-data:
