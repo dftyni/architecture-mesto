@@ -1,6 +1,6 @@
 services:
   configSrv:
-    image: mongo:latest 
+    image: mongo:latest
     container_name: configSrv 
     restart: always
     ports:
@@ -12,7 +12,7 @@ services:
       - config-data:/data/db
     command:
       [
-        "--configsvr", 
+        "--configsvr",  
         "--replSet",
         "config_server",
         "--bind_ip_all",
@@ -32,14 +32,14 @@ services:
       - "27018:27018"
     networks:
       app-network:
-        ipv4_address: 173.17.0.8
+        ipv4_address: 173.17.0.9
     volumes:
       - shard1-data:/data/db
     command:
       [
-        "--shardsvr",
+        "--shardsvr", 
         "--replSet",
-        "shard1",
+        "shard1", 
         "--bind_ip_all",
         "--port",
         "27018"
@@ -57,15 +57,15 @@ services:
       - "27019:27019"
     networks:
       app-network:
-        ipv4_address: 173.17.0.9
+        ipv4_address: 173.17.0.8
     volumes:
       - shard2-data:/data/db
     command:
       [
         "--shardsvr",
         "--replSet",
-        "shard2", 
-        "--bind_ip_all",
+        "shard2",
+        "--bind_ip_all", 
         "--port",
         "27019"
       ]
@@ -85,9 +85,9 @@ services:
         ipv4_address: 173.17.0.7
     command:
       [
-        "mongos", 
+        "mongos",
         "--configdb", 
-        "config_server/configSrv:27017", 
+        "config_server/configSrv:27017",
         "--bind_ip_all",
         "--port",
         "27020"
@@ -107,8 +107,11 @@ services:
       - mongos_router
     ports:
       - 8080:8080
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.11
     environment:
-      MONGODB_URL: "mongodb://173.17.0.7:27020"
+      MONGODB_URL: "mongodb://mongos_router:27020"
       MONGODB_DATABASE_NAME: "somedb"
 
 networks:
