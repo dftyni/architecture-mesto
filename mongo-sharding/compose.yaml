@@ -1,8 +1,10 @@
+name: mongo-sharding
+
 services:
   configSrv:
     image: mongo:latest
     container_name: configSrv 
-    restart: always
+    restart: on-failure
     ports:
       - "27017:27017"
     networks:
@@ -20,14 +22,16 @@ services:
         "27017"
       ] 
     healthcheck:
-      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
-      interval: 5s
-      start_period: 10s
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
   shard1:
     image: mongo:latest
     container_name: shard1
-    restart: always
+    restart: on-failure
     ports:
       - "27018:27018"
     networks:
@@ -45,14 +49,16 @@ services:
         "27018"
       ]
     healthcheck:
-      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
-      interval: 5s
-      start_period: 10s
+      test: echo 'db.runCommand("ping").ok' | mongosh shard1:27018/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
 
   shard2:
     image: mongo:latest
     container_name: shard2
-    restart: always
+    restart: on-failure
     ports:
       - "27019:27019"
     networks:
@@ -70,14 +76,16 @@ services:
         "27019"
       ]
     healthcheck:
-      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
-      interval: 5s
-      start_period: 10s
+      test: echo 'db.runCommand("ping").ok' | mongosh shard2:27019/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
   
   mongos_router:
     image: mongo:latest
     container_name: mongos_router
-    restart: always
+    restart: on-failure
     ports:
       - "27020:27020"
     networks:
@@ -93,9 +101,11 @@ services:
         "27020"
       ]
     healthcheck:
-      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
-      interval: 5s
-      start_period: 10s
+      test: echo 'db.runCommand("ping").ok' | mongosh mongos_router:27020/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
 
   pymongo_api:
     container_name: pymongo_api
