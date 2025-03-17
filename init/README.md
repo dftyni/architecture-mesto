@@ -1,4 +1,4 @@
-# pymongo-api
+dock    # pymongo-api
 
 ## Как запустить
 
