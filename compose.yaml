@@ -1,3 +1,4 @@
+name: sprint2
 services:
   mongodb1:
     container_name: mongodb1
