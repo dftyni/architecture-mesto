@@ -1,4 +1,4 @@
-name: mongo-sharding
+name: mongo-sharding-repl
 version: '3'
 
 services:
@@ -52,6 +52,33 @@ services:
       interval: 5s
       start_period: 10s
 
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongos_router
+      ME_CONFIG_MONGODB_URL: "mongodb://mongos_router:27020"
+    networks:
+      - app-network
+    ports:
+      - "8088:8088"
+    depends_on:
+      - mongos_router
+
+  pymongo_api:
+    container_name: pymongo_api
+    image: kazhem/pymongo_api:1.0.0
+    depends_on:
+      - mongos_router
+    ports:
+      - 8080:8080
+    networks:
+      - app-network
+    environment:
+      MONGODB_URL: "mongodb://mongos_router:27020"
+      MONGODB_DATABASE_NAME: "somedb"
+
   shard2:
     image: mongo:latest
     container_name: shard2
@@ -100,33 +127,6 @@ services:
       test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
       interval: 5s
       start_period: 10s
-
-  mongo-express:
-    image: mongo-express
-    container_name: mongo-express
-    restart: always
-    environment:
-      ME_CONFIG_MONGODB_SERVER: mongos_router
-      ME_CONFIG_MONGODB_PORT: "27020"
-    networks:
-      - app-network
-    ports:
-      - "8088:8088"
-    depends_on:
-      - mongos_router
-
-  pymongo_api:
-    container_name: pymongo_api
-    image: kazhem/pymongo_api:1.0.0
-    depends_on:
-      - mongos_router
-    ports:
-      - 8080:8080
-    networks:
-      - app-network
-    environment:
-      MONGODB_URL: "mongodb://mongos_router:27020"
-      MONGODB_DATABASE_NAME: "somedb"
 
 networks:
   app-network:
