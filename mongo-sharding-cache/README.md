@@ -1,4 +1,4 @@
-# mongo-sharding-repl
+# mongo-sharding-cache
 
 ## Проект состоит из следующих контейнеров
 
@@ -12,6 +12,7 @@ shard2-2        // реплика shard2
 shard2-3        // реплика shard2
 mongos_router   // роутер
 mongo-express   // отобразить UI базы в браузере
+redis
 pymongo_api     // апишка к базе
 ```
 
@@ -20,7 +21,7 @@ pymongo_api     // апишка к базе
 Запускаем
 
 ```shell
-docker compose -p mongo-sharding-repl up
+docker compose -p mongo-sharding-cache up
 ```
 
 Можно дернуть sh скрипт 
@@ -110,9 +111,11 @@ docker exec -it mongos_router mongosh --port 27020
 Проверить в браузере http://localhost:8080
 Посмотреть базу http://localhost:8080/helloDoc/users
 
+При повторном вызове запросов время ответа сокарщается на порядки.
+
 ## Тушим
 
 ```shell
-docker compose -p mongo-sharding-repl down -v
+docker compose -p mongo-sharding-cache down -v
 docker system prune -a --volumes
 ```
