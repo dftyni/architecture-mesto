@@ -107,7 +107,7 @@ services:
     restart: always
     environment:
       ME_CONFIG_MONGODB_SERVER: mongos_router
-      ME_CONFIG_MONGODB_PORT: "27020"
+      ME_CONFIG_MONGODB_URL: "mongodb://mongos_router:27020"
     networks:
       - app-network
     ports:

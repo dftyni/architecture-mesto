@@ -2,12 +2,14 @@
 
 ## Проект состоит из следующих контейнеров
 
+```
 configSrv       // конфигурационный сервер
 shard1
 shard2
 mongos_router   // роутер
 mongo-express   // отобразить UI базы в браузере
 pymongo_api     // апишка к базе
+```
 
 ## Как запустить
 
@@ -89,11 +91,12 @@ docker exec -it mongos_router mongosh --port 27020
 
 ## Проверяем через pymongo_api
 
-Откройте в браузере http://localhost:8080
+Проверить в браузере http://localhost:8080
 Посмотреть базу http://localhost:8080/helloDoc/users
 
 ## Тушим
 
-'''shell
+```shell
 docker compose -p mongo-sharding down -v
-'''
+docker system prune -a --volumes
+```
