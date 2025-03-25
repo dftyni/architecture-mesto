@@ -121,7 +121,7 @@
       <root>
         <mxCell id="t2ZE7IiZ9eQhdRnARFYV-0" />
         <mxCell id="t2ZE7IiZ9eQhdRnARFYV-1" parent="t2ZE7IiZ9eQhdRnARFYV-0" />
-        <mxCell id="t2ZE7IiZ9eQhdRnARFYV-2" value="Шард-1" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 8;verticalAlign=top;" vertex="1" parent="t2ZE7IiZ9eQhdRnARFYV-1">
+        <mxCell id="t2ZE7IiZ9eQhdRnARFYV-2" value="Шард-1&lt;div&gt;(mongodb1)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 8;verticalAlign=top;" vertex="1" parent="t2ZE7IiZ9eQhdRnARFYV-1">
           <mxGeometry x="345" y="640" width="180" height="260" as="geometry" />
         </mxCell>
         <mxCell id="23g_NzueBn2f7fdowQrA-1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;curved=0;" edge="1" parent="t2ZE7IiZ9eQhdRnARFYV-1" source="t2ZE7IiZ9eQhdRnARFYV-4" target="23g_NzueBn2f7fdowQrA-0">
@@ -154,28 +154,28 @@
         <mxCell id="t2ZE7IiZ9eQhdRnARFYV-9" value="Конфигурационный сервер&lt;div&gt;(configSrv)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="t2ZE7IiZ9eQhdRnARFYV-1">
           <mxGeometry x="820" y="314" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="t2ZE7IiZ9eQhdRnARFYV-10" value="Первичный сервер&lt;div&gt;(mongodb1)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="t2ZE7IiZ9eQhdRnARFYV-1">
+        <mxCell id="t2ZE7IiZ9eQhdRnARFYV-10" value="Первичный сервер&lt;div&gt;(mongodb1_1)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="t2ZE7IiZ9eQhdRnARFYV-1">
           <mxGeometry x="375" y="680" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="t2ZE7IiZ9eQhdRnARFYV-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="t2ZE7IiZ9eQhdRnARFYV-1" source="t2ZE7IiZ9eQhdRnARFYV-12" target="t2ZE7IiZ9eQhdRnARFYV-9">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="t2ZE7IiZ9eQhdRnARFYV-12" value="Шард-2" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 8;verticalAlign=top;" vertex="1" parent="t2ZE7IiZ9eQhdRnARFYV-1">
+        <mxCell id="t2ZE7IiZ9eQhdRnARFYV-12" value="Шард-2&lt;div&gt;(mongodb2)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 8;verticalAlign=top;" vertex="1" parent="t2ZE7IiZ9eQhdRnARFYV-1">
           <mxGeometry x="625" y="640" width="180" height="260" as="geometry" />
         </mxCell>
-        <mxCell id="t2ZE7IiZ9eQhdRnARFYV-13" value="Первичный сервер&lt;div&gt;(mongodb2&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="t2ZE7IiZ9eQhdRnARFYV-1">
+        <mxCell id="t2ZE7IiZ9eQhdRnARFYV-13" value="Первичный сервер&lt;div&gt;(mongodb2_1&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="t2ZE7IiZ9eQhdRnARFYV-1">
           <mxGeometry x="655" y="680" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="t2ZE7IiZ9eQhdRnARFYV-14" value="Вторичный сервер&lt;div&gt;(mongodb1-2)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="t2ZE7IiZ9eQhdRnARFYV-1">
+        <mxCell id="t2ZE7IiZ9eQhdRnARFYV-14" value="Вторичный сервер&lt;div&gt;(mongodb1_2)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="t2ZE7IiZ9eQhdRnARFYV-1">
           <mxGeometry x="375" y="750" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="t2ZE7IiZ9eQhdRnARFYV-15" value="Первичный сервер&lt;div&gt;(mongodb1-3)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="t2ZE7IiZ9eQhdRnARFYV-1">
+        <mxCell id="t2ZE7IiZ9eQhdRnARFYV-15" value="Первичный сервер&lt;div&gt;(mongodb1_3)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="t2ZE7IiZ9eQhdRnARFYV-1">
           <mxGeometry x="375" y="820" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="t2ZE7IiZ9eQhdRnARFYV-16" value="Первичный сервер&lt;div&gt;(mongodb2-2&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="t2ZE7IiZ9eQhdRnARFYV-1">
+        <mxCell id="t2ZE7IiZ9eQhdRnARFYV-16" value="Первичный сервер&lt;div&gt;(mongodb2_2&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="t2ZE7IiZ9eQhdRnARFYV-1">
           <mxGeometry x="655" y="750" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="t2ZE7IiZ9eQhdRnARFYV-17" value="Первичный сервер&lt;div&gt;(mongodb2-3&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="t2ZE7IiZ9eQhdRnARFYV-1">
+        <mxCell id="t2ZE7IiZ9eQhdRnARFYV-17" value="Первичный сервер&lt;div&gt;(mongodb2_3&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="t2ZE7IiZ9eQhdRnARFYV-1">
           <mxGeometry x="655" y="820" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="23g_NzueBn2f7fdowQrA-0" value="Кэш&lt;div&gt;(redis)&lt;/div&gt;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="t2ZE7IiZ9eQhdRnARFYV-1">
