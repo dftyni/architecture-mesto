@@ -1,18 +1,10 @@
 # pymongo-api
 
+Диаграмма решения представлена в файле [arch-diagram.drawio](./arch-diagram.drawio)
+
 ## Как запустить
 
-Запускаем mongodb и приложение
-
-```shell
-docker compose up -d
-```
-
-Заполняем mongodb данными
-
-```shell
-./scripts/mongo-init.sh
-```
+Для запуска и настройки приложения выполните инструкцию [Задания 3](./mongo-sharding-repl/README.md), перейдя в рабочий каталог `./sharding-repl-cache`.
 
 ## Как проверить
 
