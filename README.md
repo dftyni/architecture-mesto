@@ -1,10 +1,10 @@
 # pymongo-api
 
-Диаграмма решения представлена в файле [arch-diagram.drawio](../arch-diagram.drawio)
+Диаграмма решения представлена в файле [arch-diagram.drawio](./arch-diagram.drawio)
 
 ## Как запустить
 
-Для запуска и настройки приложения выполните инструкцию [Задания 3](../mongo-sharding-repl/README.md), перейдя в рабочий каталог `./sharding-repl-cache`.
+Для запуска и настройки приложения выполните инструкцию [Задания 3](./mongo-sharding-repl/README.md), перейдя в рабочий каталог `./sharding-repl-cache`.
 
 ## Как проверить
 
