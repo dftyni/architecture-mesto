@@ -1,0 +1,134 @@
+name: mongo-sharding
+services:
+
+  mongodb_config_server:
+    image: mongo:latest
+    container_name: mongodb_config_server 
+    restart: always
+    ports:
+      - "27017:27017"
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.7
+    volumes:
+      - mongodb-config-data:/data/db
+    command:
+      [
+        "--configsvr",
+        "--replSet",
+        "config_server",
+        "--bind_ip_all",
+        "--port",
+        "27017"
+      ] 
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      interval: 5s
+      start_period: 10s
+
+  mongodb_shard_0:
+    image: mongo:latest
+    container_name: mongodb_shard_0
+    restart: always
+    ports:
+      - "27018:27018"
+    command:
+      [
+        "--shardsvr",
+        "--replSet",
+        "mongodb_shard_0",
+        "--bind_ip_all",
+        "--port",
+        "27018"
+      ]
+    volumes:
+      - mongodb-shard-0-data:/data/db
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.8
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      interval: 5s
+      start_period: 10s
+
+  mongodb_shard_1:
+    image: mongo:latest
+    container_name: mongodb_shard_1
+    restart: always
+    ports:
+      - "27019:27019"
+    command:
+      [
+        "--shardsvr",
+        "--replSet",
+        "mongodb_shard_1",
+        "--bind_ip_all",
+        "--port",
+        "27019"
+      ]
+    volumes:
+      - mongodb-shard-1-data:/data/db
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.9
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      interval: 5s
+      start_period: 10s
+
+  mongodb_router:
+    image: mongo:latest
+    container_name: mongodb_router
+    restart: always
+    ports:
+      - "27020:27020"
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.10
+    command:
+      [
+        "mongos",
+        "--configdb", 
+        "config_server/mongodb_config_server:27017",
+        "--bind_ip_all",
+        "--port",
+        "27020"
+      ]
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      interval: 5s
+      start_period: 10s
+
+  pymongo_api:
+    container_name: pymongo_api
+    build: 
+      context: api_app
+      dockerfile: Dockerfile
+    image: kazhem/pymongo_api:1.0.0
+    depends_on:
+      - mongodb_config_server
+      - mongodb_shard_0
+      - mongodb_shard_1
+      - mongodb_router
+    ports:
+      - 8080:8080
+    networks:
+      app-network:
+        ipv4_address: 173.17.0.11
+    environment:
+      MONGODB_URL: "mongodb://mongodb_router:27020"
+      MONGODB_DATABASE_NAME: "somedb"
+
+
+networks:
+  app-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 173.17.0.0/16
+
+volumes:
+  mongodb-config-data:
+  mongodb-shard-0-data:
+  mongodb-shard-1-data:
