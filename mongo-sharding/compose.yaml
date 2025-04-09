@@ -1,3 +1,5 @@
+name: mongo-sharding
+
 services:
   configSrv:
     container_name: configSrv 
