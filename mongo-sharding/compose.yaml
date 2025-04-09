@@ -2,7 +2,7 @@ name: mongo-sharding
 
 services:
   configSrv:
-    container_name: configSrv 
+    container_name: configSrv
     image: dh-mirror.gitverse.ru/mongo:latest
     restart: always
     ports:
@@ -19,10 +19,10 @@ services:
         "config_server",
         "--bind_ip_all",
         "--port",
-        "27017"
-      ] 
+        "27017",
+      ]
     healthcheck:
-      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
       interval: 5s
       start_period: 10s
 
@@ -38,16 +38,9 @@ services:
     volumes:
       - shard1-data:/data/db
     command:
-      [
-        "--shardsvr",
-        "--replSet",
-        "shard1",
-        "--bind_ip_all",
-        "--port",
-        "27018"
-      ]
+      ["--shardsvr", "--replSet", "shard1", "--bind_ip_all", "--port", "27018"]
     healthcheck:
-      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
       interval: 5s
       start_period: 10s
 
@@ -63,19 +56,12 @@ services:
     volumes:
       - shard2-data:/data/db
     command:
-      [
-        "--shardsvr",
-        "--replSet",
-        "shard2", 
-        "--bind_ip_all",
-        "--port",
-        "27019"
-      ]
+      ["--shardsvr", "--replSet", "shard2", "--bind_ip_all", "--port", "27019"]
     healthcheck:
-      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
       interval: 5s
       start_period: 10s
-  
+
   mongos_router:
     container_name: mongos_router
     image: dh-mirror.gitverse.ru/mongo:latest
@@ -88,21 +74,21 @@ services:
     command:
       [
         "mongos",
-        "--configdb", 
+        "--configdb",
         "config_server/configSrv:27017",
         "--bind_ip_all",
         "--port",
-        "27020"
+        "27020",
       ]
     healthcheck:
-      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
       interval: 5s
       start_period: 10s
 
   pymongo_api:
     container_name: pymongo_api
     image: kazhem/pymongo_api:1.0.0
-    build: 
+    build:
       context: api_app
       dockerfile: Dockerfile
     depends_on:
@@ -117,7 +103,7 @@ services:
       - 8080:8080
     environment:
       MONGODB_URL: "mongodb://mongos_router:27020"
-      MONGODB_DATABASE_NAME: "somedb"   
+      MONGODB_DATABASE_NAME: "somedb"
 
 networks:
   app-network:
