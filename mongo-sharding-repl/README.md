@@ -1,10 +1,4 @@
-# Задания 1, 5 и 6 
-
-Файл со схемами залит в репозиторий, называется sprint-2.drawio 
-
-
-
-# Задания 2, 3 и 4
+# Проект Спринта 2 (шардирование и репликация)
 
 ## Перед тем, как начать
 
@@ -17,7 +11,7 @@ docker volume prune -f
 docker network prune -f
 ```
 
-А ещё могут остаться старые данные в бд. Если хочется, чтобы все прям было чисто и красиво, можно их тоже дропнуть:
+А ещё могут остаться сарые даннве в бд. Если хочется, чтобы все прям было чисто и красиво, можно их тоже дропнуть: 
 
 ```bash 
 docker-compose exec -T shard1-1 mongosh --port 27018 --quiet <<EOF
@@ -37,7 +31,7 @@ EOF
 1. Перейдите в директорию проекта:
 
 ```bash
-cd mongo-sharding-cache
+cd mongo-sharding-repl
 ```
 
 2. Запустите контейнеры:
@@ -45,6 +39,7 @@ cd mongo-sharding-cache
 ```bash
 docker-compose up --build -d 
 ```
+> **_NOTE:_**  используем -d, потому что иначе нам до инициализации завалит логами всё, жалуясь, что мы не инициализировали ничего.
 
 ## Шардирование
 
@@ -64,7 +59,7 @@ EOF
 4. Инициализация shard1
 
 ```bash
-docker-compose exec -T shard1-1 mongosh --port 27018 <<EOF
+docker-compose exec shard1-1 mongosh --port 27018 <<EOF
 rs.initiate({
   _id : "shard1",
   members: [
@@ -79,7 +74,7 @@ EOF
 5. Инициализация shard2
 
 ```bash
-docker-compose exec -T shard2-1 mongosh --port 27019 <<EOF
+docker-compose exec shard2-1 mongosh --port 27019 <<EOF
 rs.initiate({
   _id : "shard2",
   members: [
@@ -162,17 +157,3 @@ docker-compose exec -T shard2-1 mongosh --port 27019 --quiet <<EOF
 rs.status();
 EOF
 ```
-
-12. Проверка Redis
-
-```bash 
-curl http://<your_IP>:8080/helloDoc/users
-```
-Первый раз страничка прогружается с ощутимыми тормозами, далее уже быстро.
-
-Для дополнительной проверки Redis можно выполнить команду внутри контейнера pymongo_api, чтобы проверить его состояние:
-
-```bash
-docker-compose exec pymongo_api python -c "import redis; r = redis.Redis(host='redis', port=6379); print(r.ping())"
-```
-Если все работает, команда вернет "True"
