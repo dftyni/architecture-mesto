@@ -1,51 +1,89 @@
 version: '3.8'
 
 services:
-  # Конфигурационный сервер (config server replica set)
-  mongodb-config:
+  # Конфигурационные серверы (3 узла в replica set)
+  mongodb-config1:
     image: mongo:latest
-    container_name: mongodb-config
+    container_name: mongodb-config1
     command: mongod --configsvr --replSet rs-config --bind_ip_all
     ports:
       - "27019:27019"
     volumes:
-      - mongodb-config-data:/data/configdb
+      - mongodb-config1-data:/data/configdb
     networks:
       - mongodb-network
 
-  # Сервер запросов (mongos router)
-  mongodb-router:
+  mongodb-config2:
     image: mongo:latest
-    container_name: mongodb-router
-    command: mongos --configdb rs-config/mongodb-config:27019 --bind_ip_all
+    container_name: mongodb-config2
+    command: mongod --configsvr --replSet rs-config --bind_ip_all
+    volumes:
+      - mongodb-config2-data:/data/configdb
+    networks:
+      - mongodb-network
+    depends_on:
+      - mongodb-config1
+
+  mongodb-config3:
+    image: mongo:latest
+    container_name: mongodb-config3
+    command: mongod --configsvr --replSet rs-config --bind_ip_all
+    volumes:
+      - mongodb-config3-data:/data/configdb
+    networks:
+      - mongodb-network
+    depends_on:
+      - mongodb-config1
+
+  # Роутеры (mongos) — 2 экземпляра для балансировки нагрузки
+  mongodb-router1:
+    image: mongo:latest
+    container_name: mongodb-router1
+    command: mongos --configdb rs-config/mongodb-config1:27019,mongodb-config2:27019,mongodb-config3:27019 --bind_ip_all
     ports:
       - "27017:27017"
     depends_on:
-      - mongodb-config
+      - mongodb-config1
+      - mongodb-config2
+      - mongodb-config3
     volumes:
-      - mongodb-router-data:/data/db
+      - mongodb-router1-data:/data/db
     networks:
       - mongodb-network
 
-  # Шард 1 (replica set)
+  mongodb-router2:
+    image: mongo:latest
+    container_name: mongodb-router2
+    command: mongos --configdb rs-config/mongodb-config1:27019,mongodb-config2:27019,mongodb-config3:27019 --bind_ip_all
+    ports:
+      - "27018:27017"
+    depends_on:
+      - mongodb-config1
+      - mongodb-config2
+      - mongodb-config3
+    volumes:
+      - mongodb-router2-data:/data/db
+    networks:
+      - mongodb-network
+
+  # Шарды (2 реплика-сета, каждый с 1 узлом)
   mongodb-shard1:
     image: mongo:latest
     container_name: mongodb-shard1
     command: mongod --shardsvr --replSet rs-shard1 --bind_ip_all
     ports:
-      - "27018:27018"
+      - "29018:27018"
     volumes:
       - mongodb-shard1-data:/data/db
     networks:
       - mongodb-network
 
-  # Шард 2 (replica set)
   mongodb-shard2:
     image: mongo:latest
     container_name: mongodb-shard2
     command: mongod --shardsvr --replSet rs-shard2 --bind_ip_all
     ports:
-      - "27020:27018"
+      - "29020:27018"
     volumes:
       - mongodb-shard2-data:/data/db
     networks:
@@ -56,20 +94,24 @@ services:
     build:
       context: api_app
       dockerfile: Dockerfile
-    image: kazhem/pymongo_api:1.0.0
+    # image: kazhem/pymongo_api:1.0.0
     depends_on:
-      - mongodb-router
+      - mongodb-router1
+      - mongodb-router2
     ports:
       - 8080:8080
     environment:
-      MONGODB_URL: "mongodb://mongodb-router:27017"
+      MONGODB_URL: "mongodb://mongodb-router1:27017,mongodb-router2:27017"
       MONGODB_DATABASE_NAME: "somedb"
     networks:
       - mongodb-network
 
 volumes:
-  mongodb-config-data:
-  mongodb-router-data:
+  mongodb-config1-data:
+  mongodb-config2-data:
+  mongodb-config3-data:
+  mongodb-router1-data:
+  mongodb-router2-data:
   mongodb-shard1-data:
   mongodb-shard2-data:
 
