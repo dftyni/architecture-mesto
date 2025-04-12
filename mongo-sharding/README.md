@@ -38,17 +38,21 @@ sh.addShard("shard2/mongo-sharding-shard2:27019") #Добавляем шарды
 sh.enableSharding("somedb") #включаем шардирование для базы данных.
 db.helloDoc.createIndex({ age: 1 }) #Создаем индекс для поля age
 sh.shardCollection("somedb.helloDoc", { age: 1 }) #указываем ключ для шардирования
+sh.splitAt("somedb.helloDoc", { age: 500 }) #Разбиваем порог age для шардирования пополам
+sh.moveChunk("somedb.helloDoc", { age: 500 }, "shard1") # Переносим один чанк из второго шарда в первый
+
 #Выходим из роутера
 
 4. Наполнение БД
-docker exec -it mongo-sharding-shard2 mongosh --port 27019 #Заходим в шард2 (или 1 не важно)
+docker exec -it mongo-sharding-router mongosh --port 27020 #заходим в роутер
 
 use somedb
 for(var i = 0; i < 1000; i++) db.helloDoc.insertOne({age:i, name:"ly"+i})
-EOF #Наполняем БД документами, выходим из шарда
+EOF #Наполняем БД документами, выходим из роутера
 
 5. Проверка шардов и заполнености БД по шардам.
 docker exec -it mongo-sharding-router mongosh --port 27020 #заходим в роутер
 
 db.helloDoc.getShardDistribution() # Проверяем данные шардов
+db.helloDoc.countDocuments() # Проверяем общее количество документов
 
