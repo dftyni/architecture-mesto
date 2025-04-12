@@ -1,35 +1,54 @@
-# pymongo-api
+1. Поднимаем контейнеры
 
-## Как запустить
+docker-compose up -d
 
-Запускаем mongodb и приложение
+2. Инициализация реплика-сетов
+docker exec -it mongo-sharding-configSrv mongosh --port 27017 #Заходим в контейнер сервера
 
-```shell
-docker compose up -d
-```
+rs.initiate({
+  _id: "config_server",
+  configsvr: true,
+  members: [
+    { _id: 0, host: "configSrv:27017" }
+  ]
+}) #Инициализируем сервер
 
-Заполняем mongodb данными
+docker exec -it mongo-sharding-shard1 mongosh --port 27018 #Заходим в шард1
+rs.initiate({
+  _id: "shard1",
+  members: [
+    { _id: 0, host: "mongo-sharding-shard1:27018" }
+  ]
+}) #Инициализируем шард 1
 
-```shell
-./scripts/mongo-init.sh
-```
+docker exec -it mongo-sharding-shard2 mongosh --port 27019 #Заходим в шард2
+rs.initiate({
+  _id: "shard2",
+  members: [
+    { _id: 0, host: "mongo-sharding-shard2:27019" }
+  ]
+}) #Инициализируем шард 2
 
-## Как проверить
+3. Добавление и включение шардирования.
+docker exec -it mongo-sharding-router mongosh --port 27020 #заходим в роутер
 
-### Если вы запускаете проект на локальной машине
+sh.addShard("shard1/mongo-sharding-shard1:27018")
+sh.addShard("shard2/mongo-sharding-shard2:27019") #Добавляем шарды в роутер
 
-Откройте в браузере http://localhost:8080
+sh.enableSharding("somedb") #включаем шардирование для базы данных.
+db.helloDoc.createIndex({ age: 1 }) #Создаем индекс для поля age
+sh.shardCollection("somedb.helloDoc", { age: 1 }) #указываем ключ для шардирования
+#Выходим из роутера
 
-### Если вы запускаете проект на предоставленной виртуальной машине
+4. Наполнение БД
+docker exec -it mongo-sharding-shard2 mongosh --port 27019 #Заходим в шард2 (или 1 не важно)
 
-Узнать белый ip виртуальной машины
+use somedb
+for(var i = 0; i < 1000; i++) db.helloDoc.insertOne({age:i, name:"ly"+i})
+EOF #Наполняем БД документами, выходим из шарда
 
-```shell
-curl --silent http://ifconfig.me
-```
+5. Проверка шардов и заполнености БД по шардам.
+docker exec -it mongo-sharding-router mongosh --port 27020 #заходим в роутер
 
-Откройте в браузере http://<ip виртуальной машины>:8080
+db.helloDoc.getShardDistribution() # Проверяем данные шардов
 
-## Доступные эндпоинты
-
-Список доступных эндпоинтов, swagger http://<ip виртуальной машины>:8080/docs
