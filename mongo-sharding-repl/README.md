@@ -17,7 +17,7 @@ docker exec -it shard1 mongosh --port 27018 #Заходим в шард1
 --------------------------------------------------------------
 
 rs.initiate({ _id: "shard1", members: [ { _id: 0, host: "shard1:27018" }, { _id: 1, host: "shard1-1:27021" }, { _id: 2, host: "shard1-2:27022" } ] })
- #Инициализируем шард 1
+#Инициализируем шард 1
 #Выходим
 ---------------------------------------------------------
 
@@ -26,9 +26,9 @@ docker exec -it shard2 mongosh --port 27019 #Заходим в шард2
 rs.initiate({ _id: "shard2", members: [ { _id: 0, host: "shard2:27019" }, { _id: 1, host: "shard2-1:27023" }, { _id: 2, host: "shard2-2:27024" } ] })
 #Инициализируем шард 2
 #Выходим
-OKOKOK
+
 ------------------------------------
-3. Добавление и включение шардирования.
+3. Инициализация роутера.
 docker exec -it mongos_router mongosh --port 27020 #заходим в роутер
 
 sh.addShard("shard1/shard1:27018,shard1-1:27021,shard1-2:27022");
@@ -37,15 +37,10 @@ sh.addShard("shard2/shard2:27019,shard2-1:27023,shard2-2:27024");
  #Добавляем шарды в роутер
 
 
-
 sh.enableSharding("somedb") #включаем шардирование для базы данных.
-db.helloDoc.createIndex({ age: 1 }) #Создаем индекс для поля age
-sh.shardCollection("somedb.helloDoc", { age: 1 }) #указываем ключ для шардирования
-sh.splitAt("somedb.helloDoc", { age: 500 }) #Разбиваем порог age для шардирования пополам
---sh.moveChunk("somedb.helloDoc", { age: 1000 }, "shard2") # Переносим один чанк из второго шарда в первый
+sh.shardCollection("somedb.helloDoc", { "name" : "hashed" } ) #указываем ключ для шардирования
 
 #Выходим из роутера
-
 4. Наполнение БД
 docker exec -it mongos_router mongosh --port 27020 #заходим в роутер
 
