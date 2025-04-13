@@ -36,10 +36,7 @@ sh.addShard("shard1/mongo-sharding-shard1:27018")
 sh.addShard("shard2/mongo-sharding-shard2:27019") #Добавляем шарды в роутер
 
 sh.enableSharding("somedb") #включаем шардирование для базы данных.
-db.helloDoc.createIndex({ age: 1 }) #Создаем индекс для поля age
-sh.shardCollection("somedb.helloDoc", { age: 1 }) #указываем ключ для шардирования
-sh.splitAt("somedb.helloDoc", { age: 500 }) #Разбиваем порог age для шардирования пополам
-sh.moveChunk("somedb.helloDoc", { age: 500 }, "shard1") # Переносим один чанк из второго шарда в первый
+sh.shardCollection("somedb.helloDoc", { "name" : "hashed" } ) #указываем ключ для шардирования
 
 #Выходим из роутера
 
