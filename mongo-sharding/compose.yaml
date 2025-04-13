@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Конфигурационные серверы (3 узла в replica set)
   mongodb-config1:

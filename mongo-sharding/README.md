@@ -1,8 +1,22 @@
+## Внимание!!!
+Используется сборка из **./api_app/Dockerfile** для **pymongo_api**, так как в текущей реализации кластера используется 2 экземпляра роутера и пришлось дорботать код, а именно убрать эту строку:
+
+```bash
+"mongo_address": client.address,
+```
+
+А если продолжить использовать docker-образ приложения kazhem/pymongo_api:1.0.0, то получим след. ошибку:
+
+```bash
+"pymongo.errors.InvalidOperation: Cannot use "address" property when load balancing among mongoses, use "nodes" instead."
+```
+
+
 # Задание 1
 
-Реализован вариант первой схемы:
-
-Список команд для запуска проекта:
+================ Реализован вариант первой схемы ================
+![Arch Schema](./assets/mongo-sharding.png)
+================ Список команд для запуска проекта ================
 
 1. Выполнить команду для сборки и запуска контейнеров **docker compose**
 
@@ -10,80 +24,41 @@
 docker compose up -d
 ```
 
-2. Выполнить скрипт инициализации для config-серверов:
+2. Сделать скрипт исполняемым
 
 ```bash
-docker exec -it mongodb-config1 mongosh --port 27019 --eval '
-  rs.initiate({
-    _id: "rs-config",
-    configsvr: true,
-    members: [
-      { _id: 0, host: "mongodb-config1:27019" },
-      { _id: 1, host: "mongodb-config2:27019" },
-      { _id: 2, host: "mongodb-config3:27019" }
-    ]
-  })
-'
+chmod +x ./scripts/setup-mongodb-cluster.sh
 ```
 
-3. Проверить статус config-серверов (можно выполнить на любом config-сервере)
+3. И выполнить скрипт
+```bash
+./scripts/setup-mongodb-cluster.sh
+```
+
+
+
+
+================ Скрипты для проверки ================
+
+
+1. Проверить статус config-серверов (можно выполнить на любом config-сервере)
 ```bash
 docker exec -it mongodb-config1 mongosh --port 27019 --eval 'rs.status()'
 ```
 
-Результат должен соответствовать следующему:
+2. Проверить, что оба роутера видят шарды
 
-
-4. Выполнить скрипт иициализации для шардов
-4.1 Для первого шарда (Шард 1):
-```bash
-docker exec -it mongodb-shard1 mongosh --port 27018 --eval 'rs.initiate({ _id: "rs-shard1", members: [{ _id: 0, host: "mongodb-shard1:27018" }] })'
-```
-
-4.2 Для второго шарда (Шард 2):
-```bash
-docker exec -it mongodb-shard2 mongosh --port 27018 --eval 'rs.initiate({ _id: "rs-shard2", members: [{ _id: 0, host: "mongodb-shard2:27018" }] })'
-```
-
-5. Выполнить скрипт по добавлению шардов через роутер
-```bash
-docker exec -it mongodb-router1 mongosh --eval '
-  sh.addShard("rs-shard1/mongodb-shard1:27018");
-  sh.addShard("rs-shard2/mongodb-shard2:27018")
-'
-```
-
-6. Проверить, что оба роутера видят шарды
-
-6.1 Для mongodb-router1
+2.1 Для mongodb-router1
 ```bash
 docker exec -it mongodb-router1 mongosh --eval 'sh.status()'
 ```
-6.2 Для mongodb-router2
+2.2 Для mongodb-router2
 ```bash
 docker exec -it mongodb-router2 mongosh --eval 'sh.status()'
 ```
 
-
-7. Наполнить БД тестовыми данными:
-```bash
-docker exec -it mongodb-router1 mongosh
-
-> sh.enableSharding("somedb");
-> sh.shardCollection("somedb.helloDoc", { "name" : "hashed" } )
-
-> use somedb
-
-> for(var i = 0; i < 1000; i++) db.helloDoc.insert({age:i, name:"ly"+i})
-
-> db.helloDoc.countDocuments()
-> exit();
-```
-
-Получится результат — 1000 документов.
-
-8. Проверить кол-во документов на каждом из шардов
-8.1 На первом шарде
+3. Проверить кол-во документов на каждом из шардов
+3.1 На первом шарде
 
 ```bash
 docker exec -it mongodb-shard1 mongosh --port 27018
@@ -95,7 +70,7 @@ docker exec -it mongodb-shard1 mongosh --port 27018
 
 Получится результат — 492 документа.
 
-8.2 На втором шарде
+3.2 На втором шарде
 
 ```bash
 docker exec -it mongodb-shard2 mongosh --port 27018
@@ -106,3 +81,9 @@ docker exec -it mongodb-shard2 mongosh --port 27018
 ```
 
 Получится результат — 508 документа.
+
+================ Скрипты для остановки контейнеров и уборки ================
+
+```bash
+docker compose down -v --rmi all --remove-orphans
+```
