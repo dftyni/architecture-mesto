@@ -1,0 +1,175 @@
+version: '3.8'
+name: sharding_repl_cache_gateway_cdn
+
+services:
+  configsvr:
+    image: mongo:6
+    container_name: configsvr
+    command: ["mongod", "--configsvr", "--replSet", "cfgRS", "--port", "27017"]
+    ports:
+      - "27017:27017"
+    volumes:
+      - configdb:/data/db
+    networks:
+      - mongo-net
+
+  shard1-a:
+    image: mongo:6
+    container_name: shard1-a
+    command: ["mongod", "--replSet", "shard1RS", "--shardsvr", "--port", "27018"]
+    ports:
+      - "27018:27018"
+    volumes:
+      - shard1a:/data/db
+    networks:
+      - mongo-net
+
+  shard1-b:
+    image: mongo:6
+    container_name: shard1-b
+    command: ["mongod", "--replSet", "shard1RS", "--shardsvr", "--port", "27019"]
+    ports:
+      - "27118:27019"
+    volumes:
+      - shard1b:/data/db
+    networks:
+      - mongo-net
+
+  shard1-c:
+    image: mongo:6
+    container_name: shard1-c
+    command: ["mongod", "--replSet", "shard1RS", "--shardsvr", "--port", "27020"]
+    ports:
+      - "27119:27020"
+    volumes:
+      - shard1c:/data/db
+    networks:
+      - mongo-net
+
+  shard2-a:
+    image: mongo:6
+    container_name: shard2-a
+    command: ["mongod", "--replSet", "shard2RS", "--shardsvr", "--port", "27021"]
+    ports:
+      - "27021:27021"
+    volumes:
+      - shard2a:/data/db
+    networks:
+      - mongo-net
+
+  shard2-b:
+    image: mongo:6
+    container_name: shard2-b
+    command: ["mongod", "--replSet", "shard2RS", "--shardsvr", "--port", "27022"]
+    ports:
+      - "27121:27022"
+    volumes:
+      - shard2b:/data/db
+    networks:
+      - mongo-net
+
+  shard2-c:
+    image: mongo:6
+    container_name: shard2-c
+    command: ["mongod", "--replSet", "shard2RS", "--shardsvr", "--port", "27023"]
+    ports:
+      - "27122:27023"
+    volumes:
+      - shard2c:/data/db
+    networks:
+      - mongo-net
+
+  mongos:
+    image: mongo:6
+    container_name: mongos
+    depends_on:
+      - configsvr
+    command: >
+      bash -c 'sleep 5 &&
+               mongos --configdb cfgRS/configsvr:27017 --bind_ip_all'
+    ports:
+      - "27020:27017"
+    networks:
+      - mongo-net
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - mongo-net
+
+  consul:
+    image: hashicorp/consul:latest
+    container_name: consul
+    ports:
+      - "8500:8500"
+    networks:
+      - mongo-net
+
+  pymongo-api:
+    build: ./custom-api
+    container_name: pymongo-api
+    depends_on:
+      - mongos
+    environment:
+      - MONGODB_URL=mongodb://mongos:27017/somedb
+      - MONGODB_DATABASE_NAME=somedb
+      - REDIS_URL=redis://redis:6379
+      - INSTANCE_NAME=api-1
+    ports:
+      - "8080:80"
+    networks:
+      - mongo-net
+
+  pymongo-api-2:
+    build: ./custom-api
+    container_name: pymongo-api-2
+    depends_on:
+      - mongos
+    environment:
+      - MONGODB_URL=mongodb://mongos:27017/somedb
+      - MONGODB_DATABASE_NAME=somedb
+      - REDIS_URL=redis://redis:6379
+      - INSTANCE_NAME=api-2
+    ports:
+      - "8081:80"
+    networks:
+      - mongo-net
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "8088:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - pymongo-api
+      - pymongo-api-2
+    networks:
+      - mongo-net
+
+  nginx-cdn:
+    image: nginx:latest
+    container_name: nginx-cdn
+    ports:
+      - "8090:80"
+    volumes:
+      - ./cdn/cdn.conf:/etc/nginx/nginx.conf:ro
+      - ./cdn-static:/usr/share/nginx/html:ro
+    networks:
+      - mongo-net
+
+networks:
+  mongo-net:
+
+volumes:
+  configdb:
+  shard1a:
+  shard1b:
+  shard1c:
+  shard2a:
+  shard2b:
+  shard2c:
