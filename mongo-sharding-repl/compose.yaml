@@ -1,3 +1,4 @@
+name: mongo-sharding-repl
 services:
   # Конфигурационные серверы (3 узла в replica set)
   mongodb-config1:
@@ -64,28 +65,73 @@ services:
     networks:
       - mongodb-network
 
-  # Шарды (2 реплика-сета, каждый с 1 узлом)
-  mongodb-shard1:
+  # Шард1 (3 реплики)
+  mongodb-shard1-node1:
     image: mongo:latest
-    container_name: mongodb-shard1
+    container_name: mongodb-shard1-node1
     command: mongod --shardsvr --replSet rs-shard1 --bind_ip_all
     ports:
       - "29018:27018"
     volumes:
-      - mongodb-shard1-data:/data/db
+      - mongodb-shard1-node1-data:/data/db
     networks:
       - mongodb-network
 
-  mongodb-shard2:
+  mongodb-shard1-node2:
     image: mongo:latest
-    container_name: mongodb-shard2
+    container_name: mongodb-shard1-node2
+    command: mongod --shardsvr --replSet rs-shard1 --bind_ip_all
+    volumes:
+      - mongodb-shard1-node2-data:/data/db
+    networks:
+      - mongodb-network
+    depends_on:
+      - mongodb-shard1-node1
+
+  mongodb-shard1-node3:
+    image: mongo:latest
+    container_name: mongodb-shard1-node3
+    command: mongod --shardsvr --replSet rs-shard1 --bind_ip_all
+    volumes:
+      - mongodb-shard1-node3-data:/data/db
+    networks:
+      - mongodb-network
+    depends_on:
+      - mongodb-shard1-node1
+
+  # Шард2 (3 реплики)
+  mongodb-shard2-node1:
+    image: mongo:latest
+    container_name: mongodb-shard2-node1
     command: mongod --shardsvr --replSet rs-shard2 --bind_ip_all
     ports:
       - "29020:27018"
     volumes:
-      - mongodb-shard2-data:/data/db
+      - mongodb-shard2-node1-data:/data/db
     networks:
       - mongodb-network
+
+  mongodb-shard2-node2:
+    image: mongo:latest
+    container_name: mongodb-shard2-node2
+    command: mongod --shardsvr --replSet rs-shard2 --bind_ip_all
+    volumes:
+      - mongodb-shard2-node2-data:/data/db
+    networks:
+      - mongodb-network
+    depends_on:
+      - mongodb-shard2-node1
+
+  mongodb-shard2-node3:
+    image: mongo:latest
+    container_name: mongodb-shard2-node3
+    command: mongod --shardsvr --replSet rs-shard2 --bind_ip_all
+    volumes:
+      - mongodb-shard2-node3-data:/data/db
+    networks:
+      - mongodb-network
+    depends_on:
+      - mongodb-shard2-node1
 
   pymongo_api:
     container_name: pymongo_api
@@ -110,8 +156,12 @@ volumes:
   mongodb-config3-data:
   mongodb-router1-data:
   mongodb-router2-data:
-  mongodb-shard1-data:
-  mongodb-shard2-data:
+  mongodb-shard1-node1-data:
+  mongodb-shard1-node2-data:
+  mongodb-shard1-node3-data:
+  mongodb-shard2-node1-data:
+  mongodb-shard2-node2-data:
+  mongodb-shard2-node3-data:
 
 networks:
   mongodb-network:

@@ -1,5 +1,5 @@
 ## Внимание!!!
-Используется сборка из **./api_app/Dockerfile** для **pymongo_api**, так как в текущей реализации кластера используется 2 экземпляра роутера и пришлось дорботать код, а именно убрать эту строку:
+Используется сборка из **./api_app/Dockerfile** для **pymongo_api**, так как в текущей реализации кластера MongoDB используется 2 экземпляра роутера - пришлось дорботать код, а именно убрать эту строку:
 
 ```bash
 "mongo_address": client.address,
@@ -12,10 +12,10 @@
 ```
 
 
-# Задание 1
+# Задание 3
 
-================ Реализован вариант первой схемы ================
-![Arch Schema](./assets/mongo-sharding.png)
+================ Реализован вариант следующей схемы ================
+![Arch Schema](./assets/mongo-sharding-repl.png)
 ================ Список команд для запуска проекта ================
 
 1. Выполнить команду для сборки и запуска контейнеров **docker compose**
@@ -57,8 +57,20 @@ docker exec -it mongodb-router1 mongosh --eval 'sh.status()'
 docker exec -it mongodb-router2 mongosh --eval 'sh.status()'
 ```
 
-3. Проверить кол-во документов на каждом из шардов
-3.1 На первом шарде
+3. Проверить статус шардов
+
+3.1 Для шарда 1
+```bash
+docker exec -it mongodb-shard1-node1 mongosh --port 27018 --eval 'rs.status()'
+```
+
+3.2 Для шарда 2
+```bash
+docker exec -it mongodb-shard2-node1 mongosh --port 27018 --eval 'rs.status()'
+```
+
+4. Проверить кол-во документов на каждом из шардов
+4.1 На первом шарде
 
 ```bash
 docker exec -it mongodb-shard1 mongosh --port 27018
@@ -70,7 +82,7 @@ docker exec -it mongodb-shard1 mongosh --port 27018
 
 Получится результат — 492 документа.
 
-3.2 На втором шарде
+4.2 На втором шарде
 
 ```bash
 docker exec -it mongodb-shard2 mongosh --port 27018
