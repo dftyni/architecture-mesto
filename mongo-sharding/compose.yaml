@@ -21,8 +21,9 @@ services:
       ]
     healthcheck:
       test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
-      interval: 5s
-      retries: 10
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   shard1:
     image: mongo:latest
@@ -44,8 +45,9 @@ services:
       ]
     healthcheck:
       test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
-      interval: 5s
-      retries: 10
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   shard2:
     image: mongo:latest
@@ -67,8 +69,9 @@ services:
       ]
     healthcheck:
       test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
-      interval: 5s
-      retries: 10
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   mongos_router:
     image: mongo:latest
@@ -82,14 +85,31 @@ services:
     command:
       [
         "mongos",
-        "--configdb", "config_server/mongo-sharding-configSrv:27017",
+        "--configdb", "config_server/configSrv:27017",
         "--bind_ip_all",
         "--port", "27020"
       ]
     healthcheck:
       test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
-      interval: 5s
-      retries: 10
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  pymongo_api:
+    container_name: pymongo_api
+    build:
+      context: api_app
+      dockerfile: Dockerfile
+    image: kazhem/pymongo_api:1.0.0
+    depends_on:
+      - mongos_router
+    ports:
+      - 8080:8080
+    networks:
+      app-network:
+    environment:
+      MONGODB_URL: "mongodb://mongo-sharding-router:27020"
+      MONGODB_DATABASE_NAME: "somedb"
 
 networks:
   app-network:

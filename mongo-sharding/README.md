@@ -53,3 +53,6 @@ docker exec -it mongo-sharding-router mongosh --port 27020 #заходим в р
 db.helloDoc.getShardDistribution() # Проверяем данные шардов
 db.helloDoc.countDocuments() # Проверяем общее количество документов
 
+###
+apt-get update && apt-get install -y dnsutils
+nslookup mongos_router
