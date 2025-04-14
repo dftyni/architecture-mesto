@@ -1,5 +1,5 @@
 ## Внимание!!!
-Используется сборка из **./api_app/Dockerfile** для **pymongo_api**, так как в текущей реализации кластера MongoDB используется 2 экземпляра роутера - пришлось дорботать код, а именно убрать эту строку:
+Используется сборка из **./api_app/Dockerfile** для **pymongo_api**, так как в текущей реализации кластера MongoDB используется 2 экземпляра роутера, поэтому пришлось дорботать код, а именно убрать эту строку:
 
 ```bash
 "mongo_address": client.address,
@@ -15,7 +15,7 @@
 # Задание 4
 
 ================ Реализован вариант следующей схемы ================
-![Arch Schema](./assets/mongo-sharding-repl.png)
+![Arch Schema](./assets/sharding-repl-cache.png)
 
 1. Конфигурационный сервер (3 узла)
 - mongodb-config1
@@ -94,7 +94,7 @@ docker exec -it mongodb-router2 mongosh --eval 'sh.status()'
 4.1 На первом шарде
 
 ```bash
-docker exec -it mongodb-shard1 mongosh --port 27018
+docker exec -it mongodb-shard1-node1 mongosh --port 27018
 
 > use somedb;
 > db.helloDoc.countDocuments();
@@ -106,7 +106,7 @@ docker exec -it mongodb-shard1 mongosh --port 27018
 4.2 На втором шарде
 
 ```bash
-docker exec -it mongodb-shard2 mongosh --port 27018
+docker exec -it mongodb-shard2-node1 mongosh --port 27018
 
 > use somedb;
 > db.helloDoc.countDocuments();
@@ -120,3 +120,8 @@ docker exec -it mongodb-shard2 mongosh --port 27018
 ```bash
 docker compose down -v --rmi all --remove-orphans
 ```
+
+================ Архитектурные схемы ================
+
+1. Ссылка - https://drive.google.com/file/d/1HY9rx6S0_x9-mQkHP8_fQDX__QQtdtTB/view?usp=sharing
+2. Файл - ./Rogozhin-architecture-sprint-2.drawio
