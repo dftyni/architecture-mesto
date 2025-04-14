@@ -36,6 +36,7 @@ sh.addShard("shard1/mongo-sharding-shard1:27018")
 sh.addShard("shard2/mongo-sharding-shard2:27019") #Добавляем шарды в роутер
 
 sh.enableSharding("somedb") #включаем шардирование для базы данных.
+db.helloDoc.createIndex({ "name": 1 }) #Создаем индекс
 sh.shardCollection("somedb.helloDoc", { "name" : "hashed" } ) #указываем ключ для шардирования
 
 #Выходим из роутера
