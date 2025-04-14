@@ -133,6 +133,18 @@ services:
     depends_on:
       - mongodb-shard2-node1
 
+# Redis (Single Node)
+  redis:
+    image: redis:latest
+    container_name: redis
+    command: redis-server --save 60 1 --loglevel warning
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - mongodb-network
+
   pymongo_api:
     container_name: pymongo_api
     build:
@@ -142,11 +154,13 @@ services:
     depends_on:
       - mongodb-router1
       - mongodb-router2
+      - redis
     ports:
       - 8080:8080
     environment:
       MONGODB_URL: "mongodb://mongodb-router1:27017,mongodb-router2:27017"
       MONGODB_DATABASE_NAME: "somedb"
+      REDIS_URL: "redis://redis:6379"
     networks:
       - mongodb-network
 
@@ -162,6 +176,7 @@ volumes:
   mongodb-shard2-node1-data:
   mongodb-shard2-node2-data:
   mongodb-shard2-node3-data:
+  redis-data:
 
 networks:
   mongodb-network:
