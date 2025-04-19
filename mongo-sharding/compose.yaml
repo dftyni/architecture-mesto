@@ -1,0 +1,78 @@
+services:
+  configSrv:
+    image: mongo:latest
+    container_name: configSrv
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_config:/data/db
+    command: [
+      "--configsvr",
+      "--replSet", "config_server",
+      "--bind_ip_all",
+      "--port", "27017"
+    ]
+
+  shard1:
+    image: mongo:latest
+    container_name: shard1
+    restart: always
+    ports:
+      - "27018:27018"
+    volumes:
+      - mongo_shard1:/data/db
+    command: [
+      "--shardsvr",
+      "--replSet", "shard1",
+      "--bind_ip_all",
+      "--port", "27018"
+    ]
+
+  shard2:
+    image: mongo:latest
+    container_name: shard2
+    restart: always
+    ports:
+      - "27019:27019"
+    volumes:
+      - mongo_shard2:/data/db
+    command: [
+      "--shardsvr",
+      "--replSet", "shard2",
+      "--bind_ip_all",
+      "--port", "27019"
+    ]
+
+  mongo_router:
+    image: mongo:latest
+    container_name: mongo_router
+    restart: always
+    ports:
+      - "27020:27020"
+    command: [
+      "mongos",
+      "--configdb", "config_server/configSrv:27017",
+      "--bind_ip_all",
+      "--port", "27020"
+    ]
+
+  pymongo_api:
+    build:
+      context: ./api_app
+      dockerfile: Dockerfile
+    image: kazhem/pymongo_api:1.0.0
+    container_name: pymongo_api
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      MONGODB_URL: "mongodb://mongo_router:27020"
+      MONGODB_DATABASE_NAME: "somedb"
+    depends_on:
+      - mongo_router
+
+volumes:
+  mongo_config:
+  mongo_shard1:
+  mongo_shard2:
