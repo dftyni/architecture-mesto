@@ -3,9 +3,15 @@ docker volume rm sharding-repl-cache_shard1-repl1-data
 docker volume rm sharding-repl-cache_shard1-repl2-data
 docker volume rm sharding-repl-cache_shard2-repl1-data
 docker volume rm sharding-repl-cache_shard2-repl2-data
-docker volume rm sharding-repl-cache_redis_1_data
-docker volume rm sharding-repl-cache_redis_2_data
-docker volume rm sharding-repl-cache_redis_3_data
-docker volume rm sharding-repl-cache_redis_4_data
-docker volume rm sharding-repl-cache_redis_5_data
-docker volume rm sharding-repl-cache_redis_6_data
+docker volume rm sharding-repl-cache_redis-data
+
+# If Redis-cluster
+# docker volume rm sharding-repl-cache_redis_1_data
+# docker volume rm sharding-repl-cache_redis_2_data
+# docker volume rm sharding-repl-cache_redis_3_data
+# docker volume rm sharding-repl-cache_redis_4_data
+# docker volume rm sharding-repl-cache_redis_5_data
+# docker volume rm sharding-repl-cache_redis_6_data
+
+# Not sure
+# docker-compose down -v

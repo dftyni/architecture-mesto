@@ -1,13 +1,14 @@
-# Replication steps
+# Caching steps
 
 ## Required
 ### Windows 
-* git (for .sh scripts running)
+* git (for `.sh` scripts running)
 
 ## Main scenario
-* С физического ПК `./scripts/init-cfg-server.sh`
-* Выполнить `./scripts/init-shards.sh`
-* Выполнить `./scripts/router-commit-shards.sh`
+* Добавить redis сервис в docker-compose
+* Развернуть его в single-node режиме (пока что)
+* Указать для pymongo_api `REDIS_URL`
+* Выполнить (с хоста): `./scripts/start.sh`
 
 ## Test case
 * Заполнение БД ~ скрипт в `./scripts/tests/fill-db.sh`
@@ -31,3 +32,10 @@ exit
 
 # FAQ
 * cleanup volumes -> `./scripts/clean-volumes.sh`
+
+# Caching log:
+```bash
+2025-04-20 21:25:07 {"asctime": "2025-04-20 18:25:07,342", "process": 1, "levelname": "INFO", "X-API-REQUEST-ID": "0921dc35-d74e-4d26-a951-a9fcb0664606", "request": {"method": "GET", "path": "/helloDoc/users", "ip": "173.19.0.1"}, "response": {"status": "successful", "status_code": 200, "time_taken": "1.0224s"}, "taskName": "Task-18"}
+
+2025-04-20 21:25:40 {"asctime": "2025-04-20 18:25:40,090", "process": 1, "levelname": "INFO", "X-API-REQUEST-ID": "b1d45cf9-78f4-45e0-916f-b39af43231a7", "request": {"method": "GET", "path": "/helloDoc/users", "ip": "173.19.0.1"}, "response": {"status": "successful", "status_code": 200, "time_taken": "0.0039s"}, "taskName": "Task-23"}
+```
