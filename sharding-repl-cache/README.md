@@ -1,15 +1,7 @@
-# Задания 1,5,6
-Файл drawio со схемой:
-https://disk.yandex.ru/d/ogD2Td0UzTTWXQ
-
-# Задания 2,3,4
+# pymongo-api
 
 ## Как запустить
 
-Необходимо перейти в директорию sharding/repl/cache
-```shell
-cd sharding/repl/cache
-```
 Запуск сервисов
 ```shell
 docker compose up -d
