@@ -1,3 +1,9 @@
+# !!!!!!!!!!!!!!!!!!!!!!
+Схемы тут:
+https://drive.google.com/file/d/1wlgT52MNpYj28IKMg4EFZjuxP-9slo62/view?usp=drive_link
+
+---
+
 # pymongo-api
 
 ## Как запустить
